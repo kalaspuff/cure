@@ -1,15 +1,15 @@
 [tool.poetry]
-name = "trailing"
-version = "0.0.2"
-description = "Decorator for adding trailing underscores to keys of keyword arguments using keys of reserved keywords or built-ins"
+name = "convention"
+version = "0.0.3"
+description = "Decorator for adding naming conventions to keys of keyword arguments, trailing underscores to reserved keywords or built-ins and coding convention conversions"
 authors = ["Carl Oscar Aaro <hello@carloscar.com>"]
-homepage = "https://github.com/kalaspuff/trailing"
-repository = "https://github.com/kalaspuff/trailing"
-keywords = ["trailing", "trailing underscore", "single trailing underscore", "single_trailing_underscore", "underscore"]
+homepage = "https://github.com/kalaspuff/convention"
+repository = "https://github.com/kalaspuff/convention"
+keywords = ["convention", "trailing underscore", "single trailing underscore", "single_trailing_underscore", "underscore"]
 readme = "README.md"
 license = "MIT"
 classifiers = [
-    "Development Status :: 1 - Planning",
+    "Development Status :: 2 - Pre-Alpha",
     "Topic :: Software Development",
     "Topic :: Software Development :: Libraries",
     "Programming Language :: Python",
