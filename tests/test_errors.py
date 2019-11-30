@@ -31,7 +31,7 @@ def test_invalid_construct(value):
 
 @pytest.mark.parametrize("value", [convention(), decorator(), convention.decorator()])
 def test_invalid_construct_no_meta(value):
-    assert value._meta == False
+    assert value._meta is False
 
     with pytest.raises(TypeError):
         value()

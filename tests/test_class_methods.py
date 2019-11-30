@@ -32,12 +32,12 @@ def test_class_methods():
 
         @staticmethod
         def stat(**kwargs):
-            return kwargs.get('id_', 0)
+            return kwargs.get("id_", 0)
 
         @convention.decorator
         @staticmethod
         def dstat(**kwargs):
-            return kwargs.get('type_', 0)
+            return kwargs.get("type_", 0)
 
     @convention(id=4711, id_=1338, type_=0)
     def local_func(id_, type_):

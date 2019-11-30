@@ -1,5 +1,3 @@
-from functools import update_wrapper
-
 import convention
 from convention import decorator
 
@@ -46,12 +44,13 @@ def test_wrapped_repr():
     assert str(convention.decorator) != f"<convention.decorator object at {id_}>"
     assert str(decorator) == str(convention.decorator)
 
-    wrapped_func = lambda: None
+    def wrapped_func():
+        pass
+
     func_id = hex(id(wrapped_func))
-    update_wrapper(wrapped_func, lambda: None)
     func = convention(wrapped_func)
 
-    start_str = "function test_wrapped_repr.<locals>.<lambda> at"
+    start_str = "function test_wrapped_repr.<locals>.wrapped_func at"
 
     assert str(func) != f"<{start_str} {id_}>"
     assert str(func) == f"<{start_str} {func_id}>"
