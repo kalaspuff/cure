@@ -4,17 +4,13 @@ import cure
 from cure import decorator
 
 
-@pytest.mark.parametrize(
-    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
-)
+@pytest.mark.parametrize("value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()])
 def test_wrapper(value):
     func = value(lambda x: x)
     assert func("input_data") == "input_data"
 
 
-@pytest.mark.parametrize(
-    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
-)
+@pytest.mark.parametrize("value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()])
 def test_wrapped_class_func(value):
     class X:
         def func(self, id_=0):
@@ -28,9 +24,7 @@ def test_wrapped_class_func(value):
     assert value(X().func)(**{"id_": 999999}) == 999999
 
 
-@pytest.mark.parametrize(
-    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
-)
+@pytest.mark.parametrize("value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()])
 def test_decorated_class_func(value):
     class X:
         @value
@@ -60,9 +54,7 @@ def test_decorated_class_func(value):
         assert x.non_decorated_func(**{"id": 999999}) == 999999
 
 
-@pytest.mark.parametrize(
-    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
-)
+@pytest.mark.parametrize("value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()])
 def test_failed_kwargs(value):
     func = lambda id=None: "42"  # noqa
     assert func(None) == "42"

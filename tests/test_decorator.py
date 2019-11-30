@@ -26,9 +26,7 @@ def test_func_without_decorator():
     )
 
 
-@pytest.mark.parametrize(
-    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
-)
+@pytest.mark.parametrize("value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()])
 def test_func_with_decorator(value):
     @value
     def func(context, url=None, method=None, query=None, global_=None, id_=None, syntax_=None, credentials=None):
@@ -52,9 +50,7 @@ def test_func_with_decorator(value):
     )
 
 
-@pytest.mark.parametrize(
-    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
-)
+@pytest.mark.parametrize("value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()])
 def test_func_with_decorator_pre_trailed(value):
     @value
     def func(context, url=None, method=None, query=None, global_=None, id_=None, syntax_=None, credentials=None):
@@ -78,9 +74,7 @@ def test_func_with_decorator_pre_trailed(value):
     )
 
 
-@pytest.mark.parametrize(
-    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
-)
+@pytest.mark.parametrize("value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()])
 def test_func_with_kwargs(value):
     @value
     def func(context, **input_kwargs):
@@ -111,9 +105,7 @@ def test_func_with_kwargs(value):
     )
 
 
-@pytest.mark.parametrize(
-    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
-)
+@pytest.mark.parametrize("value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()])
 def test_wrapped_func(value):
     def func(context, url=None, method=None, query=None, global_=None, id_=None, syntax_=None, credentials=None):
         return (url, method, id_, [global_, syntax_], credentials is None)
@@ -138,9 +130,7 @@ def test_wrapped_func(value):
     )
 
 
-@pytest.mark.parametrize(
-    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
-)
+@pytest.mark.parametrize("value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()])
 def test_wrapped_and_decorated_func(value):
     @value
     def func(context, url=None, method=None, query=None, global_=None, id_=None, syntax_=None, credentials=None):
