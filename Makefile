@@ -29,9 +29,9 @@ build:
 	poetry build
 
 release:
-#	make pytest
-#	make flake8
-#	make mypy
+	make pytest
+	make flake8
+	make mypy
 	make version
 	make build
 	poetry publish
