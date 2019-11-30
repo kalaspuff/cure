@@ -1,16 +1,16 @@
 import pytest
 
-import convention
-from convention import decorator
+import cure
+from cure import decorator
 
 
-@pytest.mark.parametrize("value", [convention(), decorator(), convention.decorator()])
+@pytest.mark.parametrize("value", [cure(), decorator(), cure.decorator()])
 def test_missing_func(value):
     with pytest.raises(TypeError):
         value()
 
 
-@pytest.mark.parametrize("value", [convention, decorator, convention.decorator])
+@pytest.mark.parametrize("value", [cure, decorator, cure.decorator])
 def test_invalid_construct(value):
     assert value._meta is True
 
@@ -29,7 +29,7 @@ def test_invalid_construct(value):
         new_value(lambda: None, extras=[])
 
 
-@pytest.mark.parametrize("value", [convention(), decorator(), convention.decorator()])
+@pytest.mark.parametrize("value", [cure(), decorator(), cure.decorator()])
 def test_invalid_construct_no_meta(value):
     assert value._meta is False
 
@@ -41,7 +41,7 @@ def test_invalid_construct_no_meta(value):
         value(lambda: None, 3, True, kw="yes")
 
 
-@pytest.mark.parametrize("value", [convention(), decorator(), convention.decorator()])
+@pytest.mark.parametrize("value", [cure(), decorator(), cure.decorator()])
 def test_invalid_argument(value):
     with pytest.raises(TypeError):
         value(1)

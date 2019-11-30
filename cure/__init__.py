@@ -19,7 +19,7 @@ class DecoratorMetaClass(type):
 
 class DecoratorBaseClass(metaclass=DecoratorMetaClass):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        if not isinstance(self, convention):
+        if not isinstance(self, cure):
             self._meta = False
 
         try:
@@ -46,12 +46,12 @@ class DecoratorBaseClass(metaclass=DecoratorMetaClass):
                 self._args: Any = args
                 self._kwargs: Any = kwargs
         except AttributeError:
-            raise TypeError("'convention.decorator' must wrap a function as argument or decorator")
+            raise TypeError("'cure.decorator' must wrap a function as argument or decorator")
 
     def __repr__(self) -> str:
         id_ = hex(id(self))
         if getattr(self, "_meta", False) or not getattr(self, "_wrapped_func", None):
-            return f"<convention.decorator object at {id_}>"
+            return f"<cure.decorator object at {id_}>"
 
         id_ = hex(id(getattr(self, "_wrapped_func", None)))
         qualname = getattr(self, "__qualname__", "")
@@ -107,7 +107,7 @@ class DecoratorBaseClass(metaclass=DecoratorMetaClass):
 
         if wrapped_func is None:
             if not getattr(self, "_meta", False) and not self._args_is_decorated_function(*args, **kwargs):
-                raise TypeError("'convention.decorator' must wrap a function as argument or decorator")
+                raise TypeError("'cure.decorator' must wrap a function as argument or decorator")
 
             result = DecoratorBaseClass(*args, **kwargs)
             if getattr(result, "_wrapped_func", None):
@@ -116,7 +116,7 @@ class DecoratorBaseClass(metaclass=DecoratorMetaClass):
 
             return result
 
-        trailed_kwargs = {convention.trail(k): v for k, v in kwargs.items()}
+        trailed_kwargs = {cure.trail(k): v for k, v in kwargs.items()}
         return wrapped_func(*args, **trailed_kwargs)
 
 
@@ -124,7 +124,7 @@ class DecoratorBaseClass(metaclass=DecoratorMetaClass):
 #        return return_value
 
 
-class convention(DecoratorBaseClass):
+class cure(DecoratorBaseClass):
     __version__: str = __version__  # noqa
     __version_info__: Tuple[int, int, int] = __version_info__  # noqa
     __author__: str = __author__
@@ -136,12 +136,12 @@ class convention(DecoratorBaseClass):
 
     @staticmethod
     def trail(kw: str) -> str:
-        if kw in convention.respected_keywords:
+        if kw in cure.respected_keywords:
             return f"{kw}_"
         return kw
 
-    def __new__(cls, *args: Any) -> "convention":
-        result = cast(convention, object.__new__(cls, *args))
+    def __new__(cls, *args: Any) -> "cure":
+        result = cast(cure, object.__new__(cls, *args))
         result._meta = True
 
         result.decorator = DecoratorBaseClass()
@@ -153,4 +153,4 @@ class convention(DecoratorBaseClass):
         raise TypeError("argument of type 'module' is not iterable")
 
 
-sys.modules[__name__] = convention()  # type: ignore
+sys.modules[__name__] = cure()  # type: ignore

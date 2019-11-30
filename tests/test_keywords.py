@@ -1,4 +1,4 @@
-from convention import trail
+from cure import trail
 
 import pytest
 

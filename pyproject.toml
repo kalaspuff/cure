@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "convention"
+name = "cure"
 version = "0.0.3"
-description = "Decorator for adding naming conventions to keys of keyword arguments, trailing underscores to reserved keywords or built-ins and coding convention conversions"
+description = "Decorator for fixing naming conventions to keys of keyword arguments - adds trailing underscores to keys using bad naming such as reserved keywords or Python built-ins"
 authors = ["Carl Oscar Aaro <hello@carloscar.com>"]
-homepage = "https://github.com/kalaspuff/convention"
-repository = "https://github.com/kalaspuff/convention"
-keywords = ["convention", "trailing underscore", "single trailing underscore", "single_trailing_underscore", "underscore"]
+homepage = "https://github.com/kalaspuff/cure"
+repository = "https://github.com/kalaspuff/cure"
+keywords = ["cure", "trailing underscore", "single trailing underscore", "single_trailing_underscore", "underscore"]
 readme = "README.md"
 license = "MIT"
 classifiers = [

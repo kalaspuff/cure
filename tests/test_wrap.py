@@ -1,11 +1,11 @@
 import pytest
 
-import convention
-from convention import decorator
+import cure
+from cure import decorator
 
 
 @pytest.mark.parametrize(
-    "value", [convention, decorator, convention.decorator, convention(), decorator(), convention.decorator()]
+    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
 )
 def test_wrapper(value):
     func = value(lambda x: x)
@@ -13,7 +13,7 @@ def test_wrapper(value):
 
 
 @pytest.mark.parametrize(
-    "value", [convention, decorator, convention.decorator, convention(), decorator(), convention.decorator()]
+    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
 )
 def test_wrapped_class_func(value):
     class X:
@@ -29,7 +29,7 @@ def test_wrapped_class_func(value):
 
 
 @pytest.mark.parametrize(
-    "value", [convention, decorator, convention.decorator, convention(), decorator(), convention.decorator()]
+    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
 )
 def test_decorated_class_func(value):
     class X:
@@ -61,7 +61,7 @@ def test_decorated_class_func(value):
 
 
 @pytest.mark.parametrize(
-    "value", [convention, decorator, convention.decorator, convention(), decorator(), convention.decorator()]
+    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
 )
 def test_failed_kwargs(value):
     func = lambda id=None: "42"  # noqa

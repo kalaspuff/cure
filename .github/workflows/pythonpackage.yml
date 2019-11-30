@@ -24,13 +24,13 @@ jobs:
         poetry install
     - name: Test with pytest
       run: |
-        PYTHONPATH=. poetry run pytest --cov convention/
+        PYTHONPATH=. poetry run pytest --cov cure/
     - name: Lint with flake8
       run: |
-        poetry run flake8 convention/ tests/
+        poetry run flake8 cure/ tests/
     - name: Type check with mypy
       run: |
-        poetry run mypy convention/
+        poetry run mypy cure/
     - name: Codecov
       run: |
         poetry run codecov --token=${{ secrets.CODECOV_TOKEN }}

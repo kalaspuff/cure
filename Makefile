@@ -10,19 +10,19 @@ default:
 	@echo "- make release      | upload dist and push tag"
 
 pytest:
-	PYTHONPATH=. poetry run pytest --cov-report term-missing --cov=convention tests/
+	PYTHONPATH=. poetry run pytest --cov-report term-missing --cov=cure tests/
 
 flake8:
-	poetry run flake8 convention/ tests/
+	poetry run flake8 cure/ tests/
 
 mypy:
-	poetry run mypy convention/
+	poetry run mypy cure/
 
 version:
-	poetry version `python convention/__version__.py`
+	poetry version `python cure/__version__.py`
 
 black:
-	poetry run black -l 120 convention/ tests/
+	poetry run black -l 120 cure/ tests/
 
 build:
 	rm -rf dist/
@@ -35,9 +35,9 @@ release:
 	make version
 	make build
 	poetry publish
-	git add pyproject.toml convention/__version__.py
+	git add pyproject.toml cure/__version__.py
 	git commit -m "Bumped version" --allow-empty
-	git tag -a `python convention/__version__.py` -m `python convention/__version__.py`
+	git tag -a `python cure/__version__.py` -m `python cure/__version__.py`
 	git push
 	git push --tags
 

@@ -1,7 +1,7 @@
 import pytest
 
-import convention
-from convention import decorator
+import cure
+from cure import decorator
 
 
 def test_func_without_decorator():
@@ -27,7 +27,7 @@ def test_func_without_decorator():
 
 
 @pytest.mark.parametrize(
-    "value", [convention, decorator, convention.decorator, convention(), decorator(), convention.decorator()]
+    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
 )
 def test_func_with_decorator(value):
     @value
@@ -53,7 +53,7 @@ def test_func_with_decorator(value):
 
 
 @pytest.mark.parametrize(
-    "value", [convention, decorator, convention.decorator, convention(), decorator(), convention.decorator()]
+    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
 )
 def test_func_with_decorator_pre_trailed(value):
     @value
@@ -79,7 +79,7 @@ def test_func_with_decorator_pre_trailed(value):
 
 
 @pytest.mark.parametrize(
-    "value", [convention, decorator, convention.decorator, convention(), decorator(), convention.decorator()]
+    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
 )
 def test_func_with_kwargs(value):
     @value
@@ -112,7 +112,7 @@ def test_func_with_kwargs(value):
 
 
 @pytest.mark.parametrize(
-    "value", [convention, decorator, convention.decorator, convention(), decorator(), convention.decorator()]
+    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
 )
 def test_wrapped_func(value):
     def func(context, url=None, method=None, query=None, global_=None, id_=None, syntax_=None, credentials=None):
@@ -139,7 +139,7 @@ def test_wrapped_func(value):
 
 
 @pytest.mark.parametrize(
-    "value", [convention, decorator, convention.decorator, convention(), decorator(), convention.decorator()]
+    "value", [cure, decorator, cure.decorator, cure(), decorator(), cure.decorator()]
 )
 def test_wrapped_and_decorated_func(value):
     @value
