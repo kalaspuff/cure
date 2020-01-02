@@ -1,156 +1,158 @@
 import builtins
-from functools import update_wrapper
+import copy
+import inspect
 import keyword
-import types
-from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Type, Union, cast  # noqa
 import sys
+import types
+from functools import update_wrapper
+from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Type, Union, cast  # noqa
+
+from decorator import FunctionMaker  # , decorate
 
 from .__version__ import __version__, __version_info__  # noqa
 
 __author__ = "Carl Oscar Aaro"
 __email__ = "hello@carloscar.com"
 
+respected_keywords: set = set(dir(builtins)) | set(keyword.kwlist)
 
-class DecoratorMetaClass(type):
-    def __new__(cls, name: str, bases: Tuple[type, ...], attributedict: Dict) -> "DecoratorMetaClass":
-        result: Type[DecoratorBaseClass] = type.__new__(cls, name, bases, attributedict)
+
+def decorate(func, caller):
+    if not func:
+        raise TypeError("'cure.decorator' must decorate a callable")
+
+    bound_arg = ()
+    is_staticmethod = False
+    is_classmethod = False
+    if not isinstance(func, types.FunctionType) and isinstance(func, staticmethod):
+        func = func.__func__
+        is_staticmethod = True
+    elif not isinstance(func, types.FunctionType) and isinstance(func, classmethod):
+        func = func.__func__
+        is_classmethod = True
+    elif not isinstance(func, types.FunctionType) and getattr(func, "__func__", None) and getattr(func, "__self__", None) and inspect.ismethod(func):
+        bound_arg = (getattr(func, "__self__"),)
+        func = func.__func__
+
+    name = None
+    if inspect.isfunction(func):
+        name = func.__name__ if not func.__name__ == '<lambda>' else '_lambda_'
+    if not name:
+        name = "_decorated_function_"
+
+    signature = f"{name}(*args, **kwargs)"
+
+    if inspect.isgeneratorfunction(caller):
+        result = FunctionMaker.create(
+            signature, "for result in _call_(_func_, *args, **kwargs): yield result", {"_call_": caller, "_func_": func}, __wrapped__=func)
+    else:
+        result = FunctionMaker.create(
+            signature, "return _call_(_func_, *args, **kwargs)",
+            {"_call_": caller, "_func_": func}, __wrapped__=func)
+
+    if hasattr(func, '__qualname__'):
+        result.__qualname__ = func.__qualname__
+
+    if bound_arg:
+        result = result.__get__(bound_arg[0])
+    if is_staticmethod:
+        result = staticmethod(result)
+    if is_classmethod:
+        result = classmethod(result)
+
+    return result
+
+
+def trail_name(kw: str) -> str:
+    if kw in respected_keywords:
+        return f"{kw}_"
+    return kw
+
+
+def _cure(func: Callable, options: List, *args: Any, **kwargs: Any) -> Any:
+    trailed_kwargs = {trail_name(k): v for k, v in kwargs.items()}
+    return func(*args, **trailed_kwargs)
+
+
+def cure_decorator(*pargs: Any, **pkwargs: Any) -> Callable:
+    options = []
+
+    def caller(*args: Any, **kwargs: Any):
+        try:
+            func, *args = args
+        except ValueError:
+            raise TypeError("'cure.decorator' must decorate a callable")
+
+        return _cure(func, options, *args, **kwargs)
+
+    decorator = FunctionMaker.create(
+        '_decorator_wrapper_(*f)',
+        'if not f: return _decorate_(None, _call_)\n'
+        'return _decorate_(f[0], _call_)',
+        {"_call_": caller, "_decorate_": decorate}, module=caller.__module__, __wrapped__=caller)
+
+    if pargs and not pkwargs and len(pargs) == 1 and (callable(pargs[0]) or (isinstance(pargs[0], (staticmethod, classmethod)) and not isinstance(pargs[0], types.FunctionType))):
+        result = decorator(pargs[0])
+    else:
+        result = decorator
+
+    return result
+
+
+class CureDecorator(object):
+    def __init__(self, func):
+        self.func = func
+        update_wrapper(self, func)
+
+    def __call__(self, *args, **kwargs):
+        result = self.func(*args, **kwargs)
+        if getattr(result, "__qualname__", None) == "_decorator_wrapper_":
+            return CureDecorator(result)
         return result
 
-
-class DecoratorBaseClass(metaclass=DecoratorMetaClass):
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        if not isinstance(self, cure):
-            self._meta = False
-
-        try:
-            if self._args_is_decorated_function(*args, **kwargs):
-                func: Any = args[0]
-
-                self._staticmethod = isinstance(func, staticmethod)
-                self._classmethod = isinstance(func, classmethod)
-                if not isinstance(func, types.FunctionType) and (self._staticmethod or self._classmethod):
-                    func = func.__func__
-
-                self.__closure__ = func.__closure__
-                self.__code__ = func.__code__
-                self.__doc__ = func.__doc__
-                self.__name__ = func.__name__
-                self.__qualname__ = func.__qualname__
-                self.__defaults__ = func.__defaults__
-                self.__annotations__ = func.__annotations__
-                self.__kwdefaults__ = func.__kwdefaults__
-
-                self._wrapped_func: Optional[Callable] = func
-                self._function_map: Dict[Tuple[Any, Any], Callable] = {}
-            else:
-                self._args: Any = args
-                self._kwargs: Any = kwargs
-        except AttributeError:
-            raise TypeError("'cure.decorator' must wrap a function as argument or decorator")
-
-    def __repr__(self) -> str:
+    def __repr__(self):
         id_ = hex(id(self))
-        if getattr(self, "_meta", False) or not getattr(self, "_wrapped_func", None):
-            return f"<cure.decorator object at {id_}>"
-
-        id_ = hex(id(getattr(self, "_wrapped_func", None)))
-        qualname = getattr(self, "__qualname__", "")
-        return f"<function {qualname} at {id_}>"
-
-    @classmethod
-    def _args_is_decorated_function(cls, *args: Any, **kwargs: Any) -> bool:
-        func: Any = None
-        if (
-            args
-            and not kwargs
-            and len(args) == 1
-            and (
-                callable(args[0])
-                or (isinstance(args[0], (staticmethod, classmethod)) and not isinstance(args[0], types.FunctionType))
-            )
-        ):
-            func = args[0]
-
-        if func is not None:
-            if not isinstance(func, types.FunctionType) and isinstance(args[0], (staticmethod, classmethod)):
-                func.__func__
-            return True
-
-        return False
-
-    def __get__(self, instance: Any, owner: Any) -> Callable:
-        key = (instance, owner)
-        function_map = cast(Dict[Tuple[Any, Any], Callable], getattr(self, "_function_map", {}))
-        if key in function_map:
-            return function_map[key]
-
-        def partial(func: Callable) -> Callable:
-            def _func(*args: Any, **kwargs: Any) -> Any:
-                return func(*args, **kwargs)
-
-            return _func
-
-        func = partial(self.__call__)
-        wrapped_func = cast(Callable, getattr(self, "_wrapped_func", None))
-        update_wrapper(func, wrapped_func)
-
-        if getattr(self, "_classmethod", False):
-            func = cast(types.FunctionType, func).__get__(owner, None)
-        elif not getattr(self, "_staticmethod", False) and instance is not None:
-            func = cast(types.FunctionType, func).__get__(instance, None)
-
-        function_map[key] = func
-        return func
-
-    def __call__(self, *args: Any, **kwargs: Any) -> Any:
-        wrapped_func = cast(Optional[Callable], getattr(self, "_wrapped_func", None))
-
-        if wrapped_func is None:
-            if not getattr(self, "_meta", False) and not self._args_is_decorated_function(*args, **kwargs):
-                raise TypeError("'cure.decorator' must wrap a function as argument or decorator")
-
-            result = DecoratorBaseClass(*args, **kwargs)
-            if getattr(result, "_wrapped_func", None):
-                result._args = getattr(self, "_args", ())
-                result._kwargs = getattr(self, "_kwargs", {})
-
-            return result
-
-        trailed_kwargs = {cure.trail(k): v for k, v in kwargs.items()}
-        return wrapped_func(*args, **trailed_kwargs)
+        return f"<cure.decorator at {id_}>"
 
 
-#        return_value = (await routine) if isinstance(routine, Awaitable) else routine
-#        return return_value
-
-
-class cure(DecoratorBaseClass):
-    __version__: str = __version__  # noqa
-    __version_info__: Tuple[int, int, int] = __version_info__  # noqa
+class Cure(object):
+    __version__: str = __version__
+    __version_info__: Tuple[int, int, int] = __version_info__
     __author__: str = __author__
     __email__: str = __email__
 
-    decorator: DecoratorBaseClass
+    def __init__(self):
+        self.decorator = CureDecorator(cure_decorator)
+        self.cure = self.decorator
 
-    respected_keywords: set = set(dir(builtins)) | set(keyword.kwlist)
+        self.respected_keywords = respected_keywords
+        self.trail_name = trail_name
 
-    @staticmethod
-    def trail(kw: str) -> str:
-        if kw in cure.respected_keywords:
-            return f"{kw}_"
-        return kw
+        update_wrapper(self, cure_decorator)
 
-    def __new__(cls, *args: Any) -> "cure":
-        result = cast(cure, object.__new__(cls, *args))
-        result._meta = True
-
-        result.decorator = DecoratorBaseClass()
-        result.decorator._meta = True
-
+    def __call__(self, *args, **kwargs):
+        result = cure_decorator(*args, **kwargs)
+        if getattr(result, "__qualname__", None) == "_decorator_wrapper_":
+            return CureDecorator(result)
         return result
 
-    def __getitem__(self, item: Any) -> Any:
-        raise TypeError("argument of type 'module' is not iterable")
+    def __repr__(self):
+        id_ = hex(id(self))
+        return f"<cure.decorator at {id_}>"
 
+#setattr(cure_decorator, "__repr__", cure_repr)
+#setattr(cure_decorator, "__str__", cure_repr)
 
-sys.modules[__name__] = cure()  # type: ignore
+#cure = copy.deepcopy(cure_decorator)
+
+#cure.__version__: str = __version__
+#cure.__version_info__: Tuple[int, int, int] = __version_info__
+#cure.__author__: str = __author__
+#cure.__email__: str = __email__
+
+#cure.decorator = cure_decorator
+
+#cure.trail_name = trail_name
+
+cure = Cure()
+sys.modules[__name__] = cure  # type: ignore

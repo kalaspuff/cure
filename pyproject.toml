@@ -24,6 +24,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.6 || ^3.7 || ^3.8"
+decorator = "^4.4.1"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7.9"
