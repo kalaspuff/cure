@@ -11,7 +11,7 @@ def test_class_methods():
                 cls.called += 1
                 return id_
 
-            return cure.decorator(1, 2, 3, 4)(_fn)(id=id_)
+            return cure.decorator()(_fn)(id=id_)
 
         @cure
         @classmethod
@@ -22,7 +22,7 @@ def test_class_methods():
 
             return _fn(id_=id_)
 
-        @cure(value="yes")
+        @cure(cure.KEYWORD_TRAILING_UNDERSCORES)
         def func(self, id_=0):
             @cure
             def _fn(id_=0):
@@ -39,7 +39,7 @@ def test_class_methods():
         def dstat(**kwargs):
             return kwargs.get("type_", 0)
 
-    @cure(id=4711, id_=1338, type_=0)
+    @cure(cure.DEFAULT_OPTIONS)
     def local_func(id_, type_):
         return id_ * type_
 

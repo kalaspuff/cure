@@ -25,7 +25,7 @@ def test_init():
 
 
 def test_available_functions():
-    assert cure.trail is not None
+    assert cure.trail_name is not None
     assert cure.respected_keywords is not None
     assert isinstance(cure.respected_keywords, set)
     assert len(cure.respected_keywords) > 10

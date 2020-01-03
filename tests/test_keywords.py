@@ -1,6 +1,6 @@
-from cure import trail
-
 import pytest
+
+from cure import trail_name
 
 
 @pytest.mark.parametrize(
@@ -34,4 +34,4 @@ import pytest
     ],
 )
 def test_keyword(kw, expected):
-    assert trail(kw) == expected
+    assert trail_name(kw) == expected
