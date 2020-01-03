@@ -81,16 +81,6 @@ def decorate(func: Callable, caller: Callable) -> Callable:
     return result
 
 
-def is_keyword(kw: str) -> bool:
-    return kw in respected_keywords
-
-
-def trail_name(kw: str) -> str:
-    if is_keyword(kw):
-        return f"{kw}_"
-    return kw
-
-
 def get_options(*args: Any, **kwargs: Any) -> List:
     if (
         args
@@ -152,6 +142,16 @@ def get_options(*args: Any, **kwargs: Any) -> List:
         raise TypeError("Invalid options: No options chosen")
 
     return list(set(options))
+
+
+def is_keyword(kw: str) -> bool:
+    return kw in respected_keywords
+
+
+def trail_name(kw: str) -> str:
+    if is_keyword(kw):
+        return f"{kw}_"
+    return kw
 
 
 def _cure(func: Callable, options: List, *args: Any, **kwargs: Any) -> Any:
