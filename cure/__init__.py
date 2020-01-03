@@ -43,6 +43,12 @@ def decorate(func, caller):
         bound_arg = (getattr(func, "__self__"),)
         func = func.__func__
 
+    if not callable(func) and not isinstance(func, (staticmethod, classmethod)) and not isinstance(func, types.FunctionType):
+        raise TypeError("'cure.decorator' must decorate a callable")
+
+    if not inspect.isfunction(func) and not inspect.ismethod(func):
+        raise TypeError("'cure.decorator' can only decorate a function")
+
     name = None
     if inspect.isfunction(func):
         name = func.__name__ if not func.__name__ == '<lambda>' else '_lambda_'
@@ -86,10 +92,13 @@ def get_options(*args: Any, **kwargs: Any) -> List:
         return DEFAULT_OPTIONS
 
     if len(args) > 1:
-        raise Exception("Invalid options")
+        raise TypeError("Invalid options")
 
     if args and not isinstance(args[0], (tuple, list, int)):
-        raise Exception("Invalid options")
+        raise TypeError("Invalid options")
+
+    if args and args[0] == DEFAULT_OPTIONS:
+        return DEFAULT_OPTIONS
 
     options = []
     if len(args) == 1:
@@ -111,7 +120,7 @@ def get_options(*args: Any, **kwargs: Any) -> List:
                     except Exception:
                         pass
             if values:
-                raise Exception("Invalid options")
+                raise TypeError("Invalid options")
 
         elif isinstance(args[0], int):
             total = 0
@@ -120,9 +129,9 @@ def get_options(*args: Any, **kwargs: Any) -> List:
                 if o.value & args[0] == o.value:
                     options.append(o)
             if args[0] & total != args[0]:
-                raise Exception("Invalid options")
+                raise TypeError("Invalid options")
         else:
-            raise Exception("Invalid options")
+            raise TypeError("Invalid options")
 
     if kwargs:
         values = [str(k).upper() for k, v in kwargs.items() if v]
@@ -134,7 +143,7 @@ def get_options(*args: Any, **kwargs: Any) -> List:
                 except Exception:
                     pass
         if values:
-            raise Exception("Invalid options")
+            raise TypeError("Invalid options")
 
     return list(set(options))
 
@@ -195,13 +204,14 @@ class Cure(object):
     __author__: str = __author__
     __email__: str = __email__
 
+    Options = Options
+    options = Options
+    KEYWORD_TRAILING_UNDERSCORES = Options.KEYWORD_TRAILING_UNDERSCORES
+    DEFAULT_OPTIONS = DEFAULT_OPTIONS
+
     def __init__(self):
         self.decorator = CureDecorator(cure_decorator)
         self.cure = self.decorator
-
-        self.Options = Options
-        self.options = Options
-        self.KEYWORD_TRAILING_UNDERSCORES = Options.KEYWORD_TRAILING_UNDERSCORES
 
         self.respected_keywords = respected_keywords
         self.trail_name = trail_name

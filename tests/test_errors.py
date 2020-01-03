@@ -16,7 +16,8 @@ def test_invalid_construct(value):
     with pytest.raises(TypeError):
         new_value()
 
-    new_value = value(4, 3, True, kw="yes")
+    with pytest.raises(TypeError):
+        new_value = value(4, 3, True, kw="yes")
     with pytest.raises(TypeError):
         new_value()
     with pytest.raises(TypeError):

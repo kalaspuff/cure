@@ -57,7 +57,7 @@ def test_wrapped_repr():
     assert repr(func) != f"<{start_str} {id_}>"
     assert repr(func) != f"<{start_str} {func_id}>"
 
-    func = cure(4711, 1338, a=1, b=2, **{"id": 55})(wrapped_func)
+    func = cure()(wrapped_func)
     assert str(func) != f"<{start_str} {id_}>"
     assert str(func) != f"<{start_str} {func_id}>"
     assert repr(func) != f"<{start_str} {id_}>"
