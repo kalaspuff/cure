@@ -124,7 +124,7 @@ def get_options(*args: Any, **kwargs: Any) -> List:
         return DEFAULT_OPTIONS
 
     options = []
-    if len(args) == 1:
+    if args:
         if isinstance(args[0], (tuple, list)):
             values = list(map(lambda x: str(x).upper(), [x for x in args[0] if x]))
             for o in Options:
@@ -146,8 +146,6 @@ def get_options(*args: Any, **kwargs: Any) -> List:
                     options.append(o)
             if args[0] & total != args[0]:
                 raise TypeError("Invalid options: unknown option supplied")
-        else:
-            raise TypeError("Invalid options: unknown values '" + args[0] + "'")
 
     if kwargs:
         values = [str(k).upper() for k, v in kwargs.items() if v]
@@ -177,11 +175,7 @@ def cure_decorator(*pargs: Any, **pkwargs: Any) -> Callable:
     options = get_options(*pargs, **pkwargs)
 
     def caller(*args: Any, **kwargs: Any) -> Any:
-        try:
-            func, *args = args  # type: ignore
-        except ValueError:
-            raise TypeError("'cure.decorator' must decorate a callable")
-
+        func, *args = args  # type: ignore
         return _cure(func, options, *args, **kwargs)
 
     decorator = FunctionMaker.create(
