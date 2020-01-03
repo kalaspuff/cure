@@ -64,17 +64,9 @@ def decorate(func: Callable, caller: Callable) -> Callable:
 
     signature = f"{name}(*args, **kwargs)"
 
-    if inspect.isgeneratorfunction(caller):
-        result = FunctionMaker.create(
-            signature,
-            "for result in _call_(_func_, *args, **kwargs): yield result",
-            {"_call_": caller, "_func_": func},
-            __wrapped__=func,
-        )
-    else:
-        result = FunctionMaker.create(
-            signature, "return _call_(_func_, *args, **kwargs)", {"_call_": caller, "_func_": func}, __wrapped__=func
-        )
+    result = FunctionMaker.create(
+        signature, "return _call_(_func_, *args, **kwargs)", {"_call_": caller, "_func_": func}, __wrapped__=func
+    )
 
     if hasattr(func, "__qualname__"):
         result.__qualname__ = func.__qualname__
