@@ -36,3 +36,6 @@ def test_options():
 
     with pytest.raises(TypeError):
         cure.get_options(unknown_option=True)
+
+    with pytest.raises(TypeError):
+        cure.get_options("string_options")

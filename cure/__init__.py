@@ -130,18 +130,9 @@ def get_options(*args: Any, **kwargs: Any) -> List:
             for o in Options:
                 if str(o.value) in values or str(o) in values or str(o).split(".")[1] in values:
                     options.append(o)
-                    try:
-                        values.remove(str(o.value))
-                    except Exception:
-                        pass
-                    try:
-                        values.remove(str(o))
-                    except Exception:
-                        pass
-                    try:
-                        values.remove(str(o).split(".")[1])
-                    except Exception:
-                        pass
+                    values = list(
+                        filter(lambda x: x != str(o.value) and x != str(o) and x != str(o).split(".")[1], values)
+                    )
             if values:
                 raise TypeError("Invalid options")
 
@@ -161,10 +152,7 @@ def get_options(*args: Any, **kwargs: Any) -> List:
         for o in Options:
             if str(o).split(".")[1] in values:
                 options.append(o)
-                try:
-                    values.remove(str(o).split(".")[1])
-                except Exception:
-                    pass
+                values.remove(str(o).split(".")[1])
         if values:
             raise TypeError("Invalid options")
 
