@@ -1,5 +1,4 @@
 import builtins
-import copy
 import inspect
 import keyword
 import sys
@@ -17,20 +16,21 @@ __email__ = "hello@carloscar.com"
 
 respected_keywords: set = set(dir(builtins)) | set(keyword.kwlist)
 
+
 class Options(IntEnum):
     KEYWORD_TRAILING_UNDERSCORES = 1
 
 
-DEFAULT_OPTIONS = [
-    Options.KEYWORD_TRAILING_UNDERSCORES
-]
+options = Options
+
+DEFAULT_OPTIONS = [Options.KEYWORD_TRAILING_UNDERSCORES]
 
 
-def decorate(func, caller):
+def decorate(func: Callable, caller: Callable) -> Callable:
     if not func:
         raise TypeError("'cure.decorator' must decorate a callable")
 
-    bound_arg = ()
+    bound_arg = None
     is_staticmethod = False
     is_classmethod = False
     if not isinstance(func, types.FunctionType) and isinstance(func, staticmethod):
@@ -39,11 +39,20 @@ def decorate(func, caller):
     elif not isinstance(func, types.FunctionType) and isinstance(func, classmethod):
         func = func.__func__
         is_classmethod = True
-    elif not isinstance(func, types.FunctionType) and getattr(func, "__func__", None) and getattr(func, "__self__", None) and inspect.ismethod(func):
-        bound_arg = (getattr(func, "__self__"),)
-        func = func.__func__
+    elif (
+        not isinstance(func, types.FunctionType)
+        and getattr(func, "__func__", None)
+        and getattr(func, "__self__", None)
+        and inspect.ismethod(func)
+    ):
+        bound_arg = getattr(func, "__self__")
+        func = func.__func__  # type: ignore
 
-    if not callable(func) and not isinstance(func, (staticmethod, classmethod)) and not isinstance(func, types.FunctionType):
+    if (
+        not callable(func)
+        and not isinstance(func, (staticmethod, classmethod))
+        and not isinstance(func, types.FunctionType)
+    ):
         raise TypeError("'cure.decorator' must decorate a callable")
 
     if not inspect.isfunction(func) and not inspect.ismethod(func):
@@ -51,7 +60,7 @@ def decorate(func, caller):
 
     name = None
     if inspect.isfunction(func):
-        name = func.__name__ if not func.__name__ == '<lambda>' else '_lambda_'
+        name = func.__name__ if not func.__name__ == "<lambda>" else "_lambda_"
     if not name:
         name = "_decorated_function_"
 
@@ -59,21 +68,25 @@ def decorate(func, caller):
 
     if inspect.isgeneratorfunction(caller):
         result = FunctionMaker.create(
-            signature, "for result in _call_(_func_, *args, **kwargs): yield result", {"_call_": caller, "_func_": func}, __wrapped__=func)
+            signature,
+            "for result in _call_(_func_, *args, **kwargs): yield result",
+            {"_call_": caller, "_func_": func},
+            __wrapped__=func,
+        )
     else:
         result = FunctionMaker.create(
-            signature, "return _call_(_func_, *args, **kwargs)",
-            {"_call_": caller, "_func_": func}, __wrapped__=func)
+            signature, "return _call_(_func_, *args, **kwargs)", {"_call_": caller, "_func_": func}, __wrapped__=func
+        )
 
-    if hasattr(func, '__qualname__'):
+    if hasattr(func, "__qualname__"):
         result.__qualname__ = func.__qualname__
 
     if bound_arg:
-        result = result.__get__(bound_arg[0])
+        result = result.__get__(bound_arg)  # type: ignore
     if is_staticmethod:
-        result = staticmethod(result)
+        result = staticmethod(result)  # type: ignore
     if is_classmethod:
-        result = classmethod(result)
+        result = classmethod(result)  # type: ignore
 
     return result
 
@@ -85,7 +98,15 @@ def trail_name(kw: str) -> str:
 
 
 def get_options(*args: Any, **kwargs: Any) -> List:
-    if args and not kwargs and len(args) == 1 and (callable(args[0]) or (isinstance(args[0], (staticmethod, classmethod)) and not isinstance(args[0], types.FunctionType))):
+    if (
+        args
+        and not kwargs
+        and len(args) == 1
+        and (
+            callable(args[0])
+            or (isinstance(args[0], (staticmethod, classmethod)) and not isinstance(args[0], types.FunctionType))
+        )
+    ):
         return DEFAULT_OPTIONS
 
     if not args and not kwargs:
@@ -160,56 +181,67 @@ def _cure(func: Callable, options: List, *args: Any, **kwargs: Any) -> Any:
 def cure_decorator(*pargs: Any, **pkwargs: Any) -> Callable:
     options = get_options(*pargs, **pkwargs)
 
-    def caller(*args: Any, **kwargs: Any):
+    def caller(*args: Any, **kwargs: Any) -> Any:
         try:
-            func, *args = args
+            func, *args = args  # type: ignore
         except ValueError:
             raise TypeError("'cure.decorator' must decorate a callable")
 
         return _cure(func, options, *args, **kwargs)
 
     decorator = FunctionMaker.create(
-        '_decorator_wrapper_(*f)',
-        'if not f: return _decorate_(None, _call_)\n'
-        'return _decorate_(f[0], _call_)',
-        {"_call_": caller, "_decorate_": decorate}, module=caller.__module__, __wrapped__=caller)
+        "_decorator_wrapper_(*f)",
+        "if not f: return _decorate_(None, _call_)\n" "return _decorate_(f[0], _call_)",
+        {"_call_": caller, "_decorate_": decorate},
+        module=caller.__module__,
+        __wrapped__=caller,
+    )
 
-    if pargs and not pkwargs and len(pargs) == 1 and (callable(pargs[0]) or (isinstance(pargs[0], (staticmethod, classmethod)) and not isinstance(pargs[0], types.FunctionType))):
+    if (
+        pargs
+        and not pkwargs
+        and len(pargs) == 1
+        and (
+            callable(pargs[0])
+            or (isinstance(pargs[0], (staticmethod, classmethod)) and not isinstance(pargs[0], types.FunctionType))
+        )
+    ):
         result = decorator(pargs[0])
     else:
         result = decorator
 
-    return result
+    return cast(Callable, result)
 
 
 class CureDecorator(object):
-    def __init__(self, func):
+    def __init__(self, func: Callable) -> None:
         self.func = func
         update_wrapper(self, func)
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: Any, **kwargs: Any) -> Callable:
         result = self.func(*args, **kwargs)
         if getattr(result, "__qualname__", None) == "_decorator_wrapper_":
             return CureDecorator(result)
-        return result
+        return cast(Callable, result)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         id_ = hex(id(self))
         return f"<cure.decorator at {id_}>"
 
 
 class Cure(object):
-    __version__: str = __version__
-    __version_info__: Tuple[int, int, int] = __version_info__
+    __version__: str = __version__  # noqa
+    __version_info__: Tuple[int, int, int] = __version_info__  # noqa
     __author__: str = __author__
     __email__: str = __email__
 
     Options = Options
     options = Options
-    KEYWORD_TRAILING_UNDERSCORES = Options.KEYWORD_TRAILING_UNDERSCORES
     DEFAULT_OPTIONS = DEFAULT_OPTIONS
 
-    def __init__(self):
+    KEYWORD_TRAILING_UNDERSCORES = Options.KEYWORD_TRAILING_UNDERSCORES
+
+    def __init__(self) -> None:
         self.decorator = CureDecorator(cure_decorator)
         self.cure = self.decorator
 
@@ -218,29 +250,22 @@ class Cure(object):
 
         update_wrapper(self, cure_decorator)
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: Any, **kwargs: Any) -> Callable:
         result = cure_decorator(*args, **kwargs)
         if getattr(result, "__qualname__", None) == "_decorator_wrapper_":
             return CureDecorator(result)
         return result
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         id_ = hex(id(self))
         return f"<cure.decorator at {id_}>"
 
-#setattr(cure_decorator, "__repr__", cure_repr)
-#setattr(cure_decorator, "__str__", cure_repr)
 
-#cure = copy.deepcopy(cure_decorator)
+cure_instance = Cure()
 
-#cure.__version__: str = __version__
-#cure.__version_info__: Tuple[int, int, int] = __version_info__
-#cure.__author__: str = __author__
-#cure.__email__: str = __email__
+decorator = cure_instance.decorator
+cure = cure_instance.decorator
 
-#cure.decorator = cure_decorator
+KEYWORD_TRAILING_UNDERSCORES = Options.KEYWORD_TRAILING_UNDERSCORES
 
-#cure.trail_name = trail_name
-
-cure = Cure()
-sys.modules[__name__] = cure  # type: ignore
+sys.modules[__name__] = cure_instance  # type: ignore
