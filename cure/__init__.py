@@ -4,6 +4,7 @@ import inspect
 import keyword
 import sys
 import types
+from enum import IntEnum
 from functools import update_wrapper
 from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Type, Union, cast  # noqa
 
@@ -15,6 +16,14 @@ __author__ = "Carl Oscar Aaro"
 __email__ = "hello@carloscar.com"
 
 respected_keywords: set = set(dir(builtins)) | set(keyword.kwlist)
+
+class Options(IntEnum):
+    KEYWORD_TRAILING_UNDERSCORES = 1
+
+
+DEFAULT_OPTIONS = [
+    Options.KEYWORD_TRAILING_UNDERSCORES
+]
 
 
 def decorate(func, caller):
@@ -69,13 +78,78 @@ def trail_name(kw: str) -> str:
     return kw
 
 
+def get_options(*args: Any, **kwargs: Any) -> List:
+    if args and not kwargs and len(args) == 1 and (callable(args[0]) or (isinstance(args[0], (staticmethod, classmethod)) and not isinstance(args[0], types.FunctionType))):
+        return DEFAULT_OPTIONS
+
+    if not args and not kwargs:
+        return DEFAULT_OPTIONS
+
+    if len(args) > 1:
+        raise Exception("Invalid options")
+
+    if args and not isinstance(args[0], (tuple, list, int)):
+        raise Exception("Invalid options")
+
+    options = []
+    if len(args) == 1:
+        if isinstance(args[0], (tuple, list)):
+            values = list(map(lambda x: str(x).upper(), [x for x in args[0]]))
+            for o in Options:
+                if str(o.value) in values or str(o) in values or str(o).split(".")[1] in values:
+                    options.append(o)
+                    try:
+                        values.remove(str(o.value))
+                    except Exception:
+                        pass
+                    try:
+                        values.remove(str(o))
+                    except Exception:
+                        pass
+                    try:
+                        values.remove(str(o).split(".")[1])
+                    except Exception:
+                        pass
+            if values:
+                raise Exception("Invalid options")
+
+        elif isinstance(args[0], int):
+            total = 0
+            for o in Options:
+                total += o.value
+                if o.value & args[0] == o.value:
+                    options.append(o)
+            if args[0] & total != args[0]:
+                raise Exception("Invalid options")
+        else:
+            raise Exception("Invalid options")
+
+    if kwargs:
+        values = [str(k).upper() for k, v in kwargs.items() if v]
+        for o in Options:
+            if str(o).split(".")[1] in values:
+                options.append(o)
+                try:
+                    values.remove(str(o).split(".")[1])
+                except Exception:
+                    pass
+        if values:
+            raise Exception("Invalid options")
+
+    return list(set(options))
+
+
 def _cure(func: Callable, options: List, *args: Any, **kwargs: Any) -> Any:
-    trailed_kwargs = {trail_name(k): v for k, v in kwargs.items()}
-    return func(*args, **trailed_kwargs)
+    new_kwargs = kwargs
+
+    if Options.KEYWORD_TRAILING_UNDERSCORES in options:
+        new_kwargs = {trail_name(k): v for k, v in new_kwargs.items()}
+
+    return func(*args, **new_kwargs)
 
 
 def cure_decorator(*pargs: Any, **pkwargs: Any) -> Callable:
-    options = []
+    options = get_options(*pargs, **pkwargs)
 
     def caller(*args: Any, **kwargs: Any):
         try:
@@ -124,6 +198,10 @@ class Cure(object):
     def __init__(self):
         self.decorator = CureDecorator(cure_decorator)
         self.cure = self.decorator
+
+        self.Options = Options
+        self.options = Options
+        self.KEYWORD_TRAILING_UNDERSCORES = Options.KEYWORD_TRAILING_UNDERSCORES
 
         self.respected_keywords = respected_keywords
         self.trail_name = trail_name
