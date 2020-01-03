@@ -11,9 +11,8 @@ def test_default_options():
 
 def test_options():
     assert cure.get_options(1) == [cure.KEYWORD_TRAILING_UNDERSCORES]
-    assert cure.get_options(0) == []
+    assert cure.get_options(1, 0, 0, 1) == [cure.KEYWORD_TRAILING_UNDERSCORES]
     assert cure.get_options(KEYWORD_TRAILING_UNDERSCORES=True) == [cure.KEYWORD_TRAILING_UNDERSCORES]
-    assert cure.get_options(KEYWORD_TRAILING_UNDERSCORES=False) == []
     assert cure.get_options(keyword_trailing_underscores=True) == [cure.KEYWORD_TRAILING_UNDERSCORES]
     assert cure.get_options(["KEYWORD_TRAILING_UNDERSCORES"]) == [cure.KEYWORD_TRAILING_UNDERSCORES]
     assert cure.get_options(["keyword_trailing_underscores"]) == [cure.KEYWORD_TRAILING_UNDERSCORES]
@@ -21,6 +20,21 @@ def test_options():
     assert cure.get_options([cure.KEYWORD_TRAILING_UNDERSCORES]) == [cure.KEYWORD_TRAILING_UNDERSCORES]
     assert cure.get_options((cure.KEYWORD_TRAILING_UNDERSCORES)) == [cure.KEYWORD_TRAILING_UNDERSCORES]
     assert cure.get_options(cure.KEYWORD_TRAILING_UNDERSCORES) == [cure.KEYWORD_TRAILING_UNDERSCORES]
+    assert cure.get_options(cure.KEYWORD_TRAILING_UNDERSCORES, cure.KEYWORD_TRAILING_UNDERSCORES) == [
+        cure.KEYWORD_TRAILING_UNDERSCORES
+    ]
+    assert cure.get_options("KEYWORD_TRAILING_UNDERSCORES", cure.KEYWORD_TRAILING_UNDERSCORES) == [
+        cure.KEYWORD_TRAILING_UNDERSCORES
+    ]
+
+    with pytest.raises(TypeError):
+        cure.get_options(0)
+
+    with pytest.raises(TypeError):
+        cure.get_options(KEYWORD_TRAILING_UNDERSCORES=False)
+
+    with pytest.raises(TypeError):
+        cure.get_options(1, 2)
 
     with pytest.raises(TypeError):
         cure.get_options(2)

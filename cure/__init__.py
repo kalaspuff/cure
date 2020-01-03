@@ -115,7 +115,7 @@ def get_options(*args: Any, **kwargs: Any) -> List:
         return DEFAULT_OPTIONS
 
     if len(args) > 1:
-        raise TypeError("Invalid options")
+        args = tuple([args])
 
     if args and not isinstance(args[0], (tuple, list, int)):
         raise TypeError("Invalid options")
@@ -126,16 +126,18 @@ def get_options(*args: Any, **kwargs: Any) -> List:
     options = []
     if len(args) == 1:
         if isinstance(args[0], (tuple, list)):
-            values = list(map(lambda x: str(x).upper(), [x for x in args[0]]))
+            values = list(map(lambda x: str(x).upper(), [x for x in args[0] if x]))
             for o in Options:
-                if str(o.value) in values or str(o) in values or str(o).split(".")[1] in values:
+                if str(o.value) in values or str(o).upper() in values or str(o).upper().split(".")[1] in values:
                     options.append(o)
                     values = list(
-                        filter(lambda x: x != str(o.value) and x != str(o) and x != str(o).split(".")[1], values)
+                        filter(
+                            lambda x: x != str(o.value) and x != str(o).upper() and x != str(o).upper().split(".")[1],
+                            values,
+                        )
                     )
             if values:
-                raise TypeError("Invalid options")
-
+                raise TypeError("Invalid options: unknown values '" + "', '".join(values) + "'")
         elif isinstance(args[0], int):
             total = 0
             for o in Options:
@@ -143,18 +145,21 @@ def get_options(*args: Any, **kwargs: Any) -> List:
                 if o.value & args[0] == o.value:
                     options.append(o)
             if args[0] & total != args[0]:
-                raise TypeError("Invalid options")
+                raise TypeError("Invalid options: unknown option supplied")
         else:
-            raise TypeError("Invalid options")
+            raise TypeError("Invalid options: unknown values '" + args[0] + "'")
 
     if kwargs:
         values = [str(k).upper() for k, v in kwargs.items() if v]
         for o in Options:
-            if str(o).split(".")[1] in values:
+            if str(o).upper().split(".")[1] in values:
                 options.append(o)
-                values.remove(str(o).split(".")[1])
+                values.remove(str(o).upper().split(".")[1])
         if values:
-            raise TypeError("Invalid options")
+            raise TypeError("Invalid options: unknown values '" + "', '".join(values) + "'")
+
+    if not options:
+        raise TypeError("Invalid options: No options chosen")
 
     return list(set(options))
 
