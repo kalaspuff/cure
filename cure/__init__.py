@@ -58,11 +58,9 @@ def decorate(func: Callable, caller: Callable) -> Callable:
     if not inspect.isfunction(func) and not inspect.ismethod(func):
         raise TypeError("'cure.decorator' can only decorate a function")
 
-    name = None
+    name = "_decorated_function_"
     if inspect.isfunction(func):
         name = func.__name__ if not func.__name__ == "<lambda>" else "_lambda_"
-    if not name:
-        name = "_decorated_function_"
 
     signature = f"{name}(*args, **kwargs)"
 
@@ -247,6 +245,7 @@ class Cure(object):
 
         self.respected_keywords = respected_keywords
         self.trail_name = trail_name
+        self.get_options = get_options
 
         update_wrapper(self, cure_decorator)
 
