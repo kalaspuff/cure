@@ -5,9 +5,9 @@ import sys
 import types
 from enum import IntEnum
 from functools import update_wrapper
-from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple, Type, Union, cast  # noqa
+from typing import Any, Callable, List, Tuple, cast
 
-from decorator import FunctionMaker  # , decorate
+from decorator import FunctionMaker
 
 from .__version__ import __version__, __version_info__  # noqa
 
@@ -89,8 +89,12 @@ def decorate(func: Callable, caller: Callable) -> Callable:
     return result
 
 
+def is_keyword(kw: str) -> bool:
+    return kw in respected_keywords
+
+
 def trail_name(kw: str) -> str:
-    if kw in respected_keywords:
+    if is_keyword(kw):
         return f"{kw}_"
     return kw
 
@@ -244,6 +248,7 @@ class Cure(object):
         self.cure = self.decorator
 
         self.respected_keywords = respected_keywords
+        self.is_keyword = is_keyword
         self.trail_name = trail_name
         self.get_options = get_options
 
