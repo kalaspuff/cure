@@ -49,3 +49,42 @@ This function uses both the options of adding trailing underscores to reserved k
 * `cure.KEYWORD_SNAKE_CASE_RECURSIVE`: Converts keys in keyword arguments to snake case. If the keyword argument's value is a dict or a list of dicts it will also convert keys within these to snake case.
 * `cure.KEYWORD_CAMEL_CASE`: Converts keys in keyword arguments to camel case. This is not recommended, but may be used as a reversal of values converted by the snake case decorator.
 * `cure.KEYWORD_CAMEL_CASE_RECURSIVE`: Recursive conversion to camel case.
+
+#### Other functions
+The following functions are also available from the module.
+
+##### `cure.is_keyword(kw)`
+```python
+import cure
+
+cure.is_keyword("id")  # True
+cure.is_keyword("type")  # True
+cure.is_keyword("api")  # False
+```
+
+##### `cure.trail_name(kw)`
+```python
+import cure
+
+cure.trail_name("id")  # "id_"
+cure.trail_name("type")  # "type_"
+cure.trail_name("api")  # "api"
+```
+
+##### `cure.snake_case_name(kw)` and `cure.snake_case_dict(input_dict)`
+```python
+import cure
+
+cure.snake_case_name("apiSecret")  # api_secret
+cure.snake_case_dict({"user": {"userId": 4711, "userLevel": "ADMIN"}}, recursive=True)
+# {'user': {'user_id': 4711, 'user_level': 'ADMIN'}}
+```
+
+##### `cure.camel_case_name(kw)` and `cure.camel_case_dict(input_dict)`
+```python
+import cure
+
+cure.camel_case_name("api_secret")  # apiSecret
+cure.camel_case_dict({"user": {"user_id": 4711, "user_level": "ADMIN"}}, recursive=True)
+# {'user': {'userId': 4711, 'userLevel': 'ADMIN'}}
+```
