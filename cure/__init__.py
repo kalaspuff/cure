@@ -312,6 +312,9 @@ class Cure(object):
         self.snake_case_name = snake_case_name
         self.snake_case_dict = snake_case_dict
 
+        self.camel_case_name = camel_case_name
+        self.camel_case_dict = camel_case_dict
+
         update_wrapper(self, cure_decorator)
 
     def __call__(self, *args: Any, **kwargs: Any) -> Callable:
