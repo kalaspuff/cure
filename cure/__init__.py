@@ -263,10 +263,14 @@ class Cure(object):
         self.decorator = CureDecorator(cure_decorator)
         self.cure = self.decorator
 
+        self.get_options = get_options
+
         self.respected_keywords = respected_keywords
         self.is_keyword = is_keyword
         self.trail_name = trail_name
-        self.get_options = get_options
+
+        self.snake_case_name = snake_case_name
+        self.snake_case_dict = snake_case_dict
 
         update_wrapper(self, cure_decorator)
 
