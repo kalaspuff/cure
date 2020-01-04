@@ -9,6 +9,11 @@
 
 Can also be used to convert input keyword arguments to snake case. All in all a decorator to put on your functions which take input from third party libraries which are dependant on user input. In my experience this may happen when working with web frameworks that may apply query values as kwargs or when interfacing with GraphQL libraries that will send user input arguments as kwargs.
 
+As described in *PEP 8 -- Style Guide for Python Code* (https://www.python.org/dev/peps/pep-0008/):
+> The following special forms using leading or trailing underscores are recognized (these can generally be combined with any case convention):
+>
+> `single_trailing_underscore_`: used by convention to avoid conflicts with Python keyword.
+
 
 ## Installation with `pip`
 Like you would install any other Python package, use `pip`, `poetry`, `pipenv` or your weapon of choice.
