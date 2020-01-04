@@ -57,25 +57,32 @@ The following functions are also available from the module.
 ```python
 import cure
 
-cure.is_keyword("id")  # True
-cure.is_keyword("type")  # True
-cure.is_keyword("api")  # False
+cure.is_keyword("id")  
+# True
+cure.is_keyword("type")  
+# True
+cure.is_keyword("api")  
+# False
 ```
 
 ##### `cure.trail_name(kw)`
 ```python
 import cure
 
-cure.trail_name("id")  # "id_"
-cure.trail_name("type")  # "type_"
-cure.trail_name("api")  # "api"
+cure.trail_name("id")  
+# "id_"
+cure.trail_name("type")  
+# "type_"
+cure.trail_name("api")  
+# "api"
 ```
 
 ##### `cure.snake_case_name(kw)` and `cure.snake_case_dict(input_dict)`
 ```python
 import cure
 
-cure.snake_case_name("apiSecret")  # api_secret
+cure.snake_case_name("apiSecret")  
+# "api_secret"
 cure.snake_case_dict({"user": {"userId": 4711, "userLevel": "ADMIN"}}, recursive=True)
 # {'user': {'user_id': 4711, 'user_level': 'ADMIN'}}
 ```
@@ -84,7 +91,8 @@ cure.snake_case_dict({"user": {"userId": 4711, "userLevel": "ADMIN"}}, recursive
 ```python
 import cure
 
-cure.camel_case_name("api_secret")  # apiSecret
+cure.camel_case_name("api_secret")  
+# "apiSecret"
 cure.camel_case_dict({"user": {"user_id": 4711, "user_level": "ADMIN"}}, recursive=True)
 # {'user': {'userId': 4711, 'userLevel': 'ADMIN'}}
 ```
