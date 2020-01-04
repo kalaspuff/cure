@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cure"
-version = "0.1.2"
+version = "0.1.3"
 description = "Decorator for fixing naming conventions to keys of keyword arguments - adds trailing underscores to keys using bad naming such as reserved keywords or Python built-ins"
 authors = ["Carl Oscar Aaro <hello@carloscar.com>"]
 homepage = "https://github.com/kalaspuff/cure"
