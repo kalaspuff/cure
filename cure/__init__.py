@@ -5,7 +5,7 @@ import sys
 import types
 from enum import IntEnum
 from functools import update_wrapper
-from typing import Any, Callable, List, Tuple, cast
+from typing import Any, Callable, Dict, List, Tuple, cast
 
 from decorator import FunctionMaker
 
@@ -19,6 +19,8 @@ respected_keywords: set = set(dir(builtins)) | set(keyword.kwlist)
 
 class Options(IntEnum):
     KEYWORD_TRAILING_UNDERSCORES = 1
+    KEYWORD_SNAKE_CASE = 2
+    KEYWORD_SNAKE_CASE_RECURSIVE = 4
 
 
 options = Options
@@ -141,7 +143,7 @@ def get_options(*args: Any, **kwargs: Any) -> List:
     if not options:
         raise TypeError("Invalid options: No options chosen")
 
-    return list(set(options))
+    return sorted(list(set(options)))
 
 
 def is_keyword(kw: str) -> bool:
@@ -154,8 +156,41 @@ def trail_name(kw: str) -> str:
     return kw
 
 
+def snake_case_name(kw: str) -> str:
+    result = ""
+
+    for i, c in enumerate(kw.lower()):
+        if i and c != kw[i]:
+            result += "_"
+        if c == "-":
+            c = "_"
+
+        result += c
+
+    return result
+
+
+def snake_case_dict(d: Dict, recursive: bool = True) -> Dict:
+    result = {}
+
+    for k, v in d.items():
+        if recursive and isinstance(v, Dict):
+            v = snake_case_dict(v, recursive)
+        if recursive and isinstance(v, List):
+            v = [snake_case_dict(x, recursive) for x in v]
+
+        result[snake_case_name(k)] = v
+
+    return result
+
+
 def _cure(func: Callable, options: List, *args: Any, **kwargs: Any) -> Any:
     new_kwargs = kwargs
+
+    if Options.KEYWORD_SNAKE_CASE_RECURSIVE in options:
+        new_kwargs = snake_case_dict(new_kwargs, recursive=True)
+    elif Options.KEYWORD_SNAKE_CASE in options:
+        new_kwargs = snake_case_dict(new_kwargs, recursive=False)
 
     if Options.KEYWORD_TRAILING_UNDERSCORES in options:
         new_kwargs = {trail_name(k): v for k, v in new_kwargs.items()}
@@ -221,6 +256,8 @@ class Cure(object):
     DEFAULT_OPTIONS = DEFAULT_OPTIONS
 
     KEYWORD_TRAILING_UNDERSCORES = Options.KEYWORD_TRAILING_UNDERSCORES
+    KEYWORD_SNAKE_CASE = Options.KEYWORD_SNAKE_CASE
+    KEYWORD_SNAKE_CASE_RECURSIVE = Options.KEYWORD_SNAKE_CASE_RECURSIVE
 
     def __init__(self) -> None:
         self.decorator = CureDecorator(cure_decorator)
@@ -250,5 +287,7 @@ decorator = cure_instance.decorator
 cure = cure_instance.decorator
 
 KEYWORD_TRAILING_UNDERSCORES = Options.KEYWORD_TRAILING_UNDERSCORES
+KEYWORD_SNAKE_CASE = Options.KEYWORD_SNAKE_CASE
+KEYWORD_SNAKE_CASE_RECURSIVE = Options.KEYWORD_SNAKE_CASE_RECURSIVE
 
 sys.modules[__name__] = cure_instance  # type: ignore

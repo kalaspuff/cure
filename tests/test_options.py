@@ -26,6 +26,10 @@ def test_options():
     assert cure.get_options("KEYWORD_TRAILING_UNDERSCORES", cure.KEYWORD_TRAILING_UNDERSCORES) == [
         cure.KEYWORD_TRAILING_UNDERSCORES
     ]
+    assert cure.get_options(cure.KEYWORD_SNAKE_CASE_RECURSIVE, cure.KEYWORD_TRAILING_UNDERSCORES) == [
+        cure.KEYWORD_TRAILING_UNDERSCORES,
+        cure.KEYWORD_SNAKE_CASE_RECURSIVE
+    ]
 
     with pytest.raises(TypeError):
         cure.get_options(0)
@@ -34,16 +38,16 @@ def test_options():
         cure.get_options(KEYWORD_TRAILING_UNDERSCORES=False)
 
     with pytest.raises(TypeError):
-        cure.get_options(1, 2)
+        cure.get_options(1, 65536)
 
     with pytest.raises(TypeError):
-        cure.get_options(2)
+        cure.get_options(65536)
 
     with pytest.raises(TypeError):
-        cure.get_options([2])
+        cure.get_options([65536])
 
     with pytest.raises(TypeError):
-        cure.get_options([3])
+        cure.get_options([131072])
 
     with pytest.raises(TypeError):
         cure.get_options(["unknown_option"])
