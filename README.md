@@ -77,7 +77,7 @@ cure.trail_name("api")
 # "api"
 ```
 
-##### `cure.snake_case_name(kw)` and `cure.snake_case_dict(input_dict)`
+##### `cure.snake_case_name(kw)` and `cure.snake_case_dict(input_dict, recursive)`
 ```python
 import cure
 
@@ -87,7 +87,7 @@ cure.snake_case_dict({"user": {"userId": 4711, "userLevel": "ADMIN"}}, recursive
 # {'user': {'user_id': 4711, 'user_level': 'ADMIN'}}
 ```
 
-##### `cure.camel_case_name(kw)` and `cure.camel_case_dict(input_dict)`
+##### `cure.camel_case_name(kw)` and `cure.camel_case_dict(input_dict, recursive)`
 ```python
 import cure
 
