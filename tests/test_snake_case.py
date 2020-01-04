@@ -1,6 +1,14 @@
 import pytest
 
-from cure import DEFAULT_OPTIONS, KEYWORD_SNAKE_CASE, KEYWORD_SNAKE_CASE_RECURSIVE, KEYWORD_TRAILING_UNDERSCORES, cure
+from cure import (
+    DEFAULT_OPTIONS,
+    KEYWORD_CAMEL_CASE,
+    KEYWORD_CAMEL_CASE_RECURSIVE,
+    KEYWORD_SNAKE_CASE,
+    KEYWORD_SNAKE_CASE_RECURSIVE,
+    KEYWORD_TRAILING_UNDERSCORES,
+    cure,
+)
 
 
 def values(**kwargs):
@@ -102,6 +110,47 @@ def values(**kwargs):
                 "resources": [
                     {"resourceId": "1", "data": "ABC", "other-value": True},
                     {"resourceId": "2", "data": "DEF", "other-value": True},
+                ]
+            },
+        ),
+        (
+            KEYWORD_CAMEL_CASE,
+            {
+                "website_address": "https://example.org/",
+                "type": "subscription",
+                "user": {"id": "4711", "last_login": "2020-01-01T00:00:00.000000Z"},
+            },
+            {
+                "websiteAddress": "https://example.org/",
+                "type": "subscription",
+                "user": {"id": "4711", "last_login": "2020-01-01T00:00:00.000000Z"},
+            },
+        ),
+        (
+            KEYWORD_CAMEL_CASE_RECURSIVE,
+            {
+                "website_address": "https://example.org/",
+                "type": "subscription",
+                "user": {"id": "4711", "last_login": "2020-01-01T00:00:00.000000Z"},
+            },
+            {
+                "websiteAddress": "https://example.org/",
+                "type": "subscription",
+                "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+            },
+        ),
+        (
+            KEYWORD_CAMEL_CASE_RECURSIVE,
+            {
+                "resources": [
+                    {"resource_id": "1", "data": "ABC", "other-value": True},
+                    {"resource_id": "2", "data": "DEF", "other-value": True},
+                ]
+            },
+            {
+                "resources": [
+                    {"resourceId": "1", "data": "ABC", "otherValue": True},
+                    {"resourceId": "2", "data": "DEF", "otherValue": True},
                 ]
             },
         ),

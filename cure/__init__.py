@@ -21,6 +21,8 @@ class Options(IntEnum):
     KEYWORD_TRAILING_UNDERSCORES = 1
     KEYWORD_SNAKE_CASE = 2
     KEYWORD_SNAKE_CASE_RECURSIVE = 4
+    KEYWORD_CAMEL_CASE = 8
+    KEYWORD_CAMEL_CASE_RECURSIVE = 16
 
 
 options = Options
@@ -184,8 +186,44 @@ def snake_case_dict(d: Dict, recursive: bool = True) -> Dict:
     return result
 
 
+def camel_case_name(kw: str) -> str:
+    result = ""
+
+    next_upper = False
+    for i, c in enumerate(kw):
+        if c in ("-", "_"):
+            next_upper = True
+            continue
+        if next_upper:
+            result += c.upper()
+            next_upper = False
+        else:
+            result += c
+
+    return result
+
+
+def camel_case_dict(d: Dict, recursive: bool = True) -> Dict:
+    result = {}
+
+    for k, v in d.items():
+        if recursive and isinstance(v, Dict):
+            v = camel_case_dict(v, recursive)
+        if recursive and isinstance(v, List):
+            v = [camel_case_dict(x, recursive) for x in v]
+
+        result[camel_case_name(k)] = v
+
+    return result
+
+
 def _cure(func: Callable, options: List, *args: Any, **kwargs: Any) -> Any:
     new_kwargs = kwargs
+
+    if Options.KEYWORD_CAMEL_CASE_RECURSIVE in options:
+        new_kwargs = camel_case_dict(new_kwargs, recursive=True)
+    elif Options.KEYWORD_CAMEL_CASE in options:
+        new_kwargs = camel_case_dict(new_kwargs, recursive=False)
 
     if Options.KEYWORD_SNAKE_CASE_RECURSIVE in options:
         new_kwargs = snake_case_dict(new_kwargs, recursive=True)
@@ -258,6 +296,8 @@ class Cure(object):
     KEYWORD_TRAILING_UNDERSCORES = Options.KEYWORD_TRAILING_UNDERSCORES
     KEYWORD_SNAKE_CASE = Options.KEYWORD_SNAKE_CASE
     KEYWORD_SNAKE_CASE_RECURSIVE = Options.KEYWORD_SNAKE_CASE_RECURSIVE
+    KEYWORD_CAMEL_CASE = Options.KEYWORD_CAMEL_CASE
+    KEYWORD_CAMEL_CASE_RECURSIVE = Options.KEYWORD_CAMEL_CASE_RECURSIVE
 
     def __init__(self) -> None:
         self.decorator = CureDecorator(cure_decorator)
@@ -293,5 +333,7 @@ cure = cure_instance.decorator
 KEYWORD_TRAILING_UNDERSCORES = Options.KEYWORD_TRAILING_UNDERSCORES
 KEYWORD_SNAKE_CASE = Options.KEYWORD_SNAKE_CASE
 KEYWORD_SNAKE_CASE_RECURSIVE = Options.KEYWORD_SNAKE_CASE_RECURSIVE
+KEYWORD_CAMEL_CASE = Options.KEYWORD_CAMEL_CASE
+KEYWORD_CAMEL_CASE_RECURSIVE = Options.KEYWORD_CAMEL_CASE_RECURSIVE
 
 sys.modules[__name__] = cure_instance  # type: ignore
