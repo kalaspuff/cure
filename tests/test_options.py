@@ -28,7 +28,7 @@ def test_options():
     ]
     assert cure.get_options(cure.KEYWORD_SNAKE_CASE_RECURSIVE, cure.KEYWORD_TRAILING_UNDERSCORES) == [
         cure.KEYWORD_TRAILING_UNDERSCORES,
-        cure.KEYWORD_SNAKE_CASE_RECURSIVE
+        cure.KEYWORD_SNAKE_CASE_RECURSIVE,
     ]
 
     with pytest.raises(TypeError):
