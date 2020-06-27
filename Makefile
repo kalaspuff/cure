@@ -24,6 +24,9 @@ version:
 black:
 	poetry run black -l 120 cure/ tests/
 
+isort:
+	poetry run isort -rc cure/ tests/
+
 build:
 	rm -rf dist/
 	poetry build
