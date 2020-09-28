@@ -22,10 +22,10 @@ version:
 	poetry version `python cure/__version__.py`
 
 black:
-	poetry run black -l 120 cure/ tests/
+	poetry run black cure/ tests/
 
 isort:
-	poetry run isort -rc cure/ tests/
+	poetry run isort cure/ tests/
 
 build:
 	rm -rf dist/
