@@ -1,4 +1,5 @@
 # `cure`
+![Python package](https://github.com/kalaspuff/cure/workflows/Python%20package/badge.svg)
 [![pypi](https://badge.fury.io/py/cure.svg)](https://pypi.python.org/pypi/cure/)
 [![Made with Python](https://img.shields.io/pypi/pyversions/cure)](https://www.python.org/)
 [![Type hinted - mypy validated](https://img.shields.io/badge/typehinted-yes-teal)](https://github.com/kalaspuff/cure)
