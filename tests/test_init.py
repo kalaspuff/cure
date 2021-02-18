@@ -23,6 +23,13 @@ def test_init():
     with pytest.raises(AttributeError):
         decorator.__version__
 
+    from cure.__version__ import __version__ as __version2__, __version_info__ as __version_info2__  # isort:skip
+
+    assert isinstance(__version_info2__, tuple)
+    assert __version_info2__
+    assert isinstance(__version2__, str)
+    assert len(__version2__)
+
 
 def test_available_functions():
     assert cure.trail_name is not None
