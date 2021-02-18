@@ -1,7 +1,9 @@
-__version_info__ = (0, 2, 2)
-__version__ = "".join([".{}".format(str(n)) if type(n) is int else str(n) for n in __version_info__]).replace(
-    ".", "", 1 if type(__version_info__[0]) is int else 0
-)
+from .__version_data__ import __version__, __version_info__  # noqa
+
+__all__ = [
+    "__version__",
+    "__version_info__",
+]
 
 if __name__ == "__main__":  # pragma: no cover
     print(__version__)

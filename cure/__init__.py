@@ -5,11 +5,11 @@ import sys
 import types
 from enum import IntEnum
 from functools import update_wrapper
-from typing import Any, Callable, Dict, List, Tuple, cast
+from typing import Any, Callable, Dict, List, Tuple, Union, cast
 
 from decorator import FunctionMaker
 
-from .__version__ import __version__, __version_info__  # noqa
+from .__version_data__ import __version__, __version_info__  # noqa
 
 __author__ = "Carl Oscar Aaro"
 __email__ = "hello@carloscar.com"
@@ -285,7 +285,7 @@ class CureDecorator(object):
 
 class Cure(object):
     __version__: str = __version__  # noqa
-    __version_info__: Tuple[int, int, int] = __version_info__  # noqa
+    __version_info__: Tuple[Union[int, str], ...] = __version_info__  # noqa
     __author__: str = __author__
     __email__: str = __email__
 
@@ -338,5 +338,16 @@ KEYWORD_SNAKE_CASE = Options.KEYWORD_SNAKE_CASE
 KEYWORD_SNAKE_CASE_RECURSIVE = Options.KEYWORD_SNAKE_CASE_RECURSIVE
 KEYWORD_CAMEL_CASE = Options.KEYWORD_CAMEL_CASE
 KEYWORD_CAMEL_CASE_RECURSIVE = Options.KEYWORD_CAMEL_CASE_RECURSIVE
+
+_actual_module = sys.modules[__name__]  # noqa
+
+cure_instance.__spec__ = _actual_module.__spec__  # type: ignore
+cure_instance.__path__ = _actual_module.__path__  # type: ignore
+cure_instance.__cached__ = _actual_module.__cached__  # type: ignore
+cure_instance.__dict__ = _actual_module.__dict__
+cure_instance.__doc__ = _actual_module.__doc__
+cure_instance.__file__ = _actual_module.__file__  # type: ignore
+cure_instance.__name__ = _actual_module.__name__  # type: ignore
+cure_instance.__package__ = _actual_module.__package__  # type: ignore
 
 sys.modules[__name__] = cure_instance  # type: ignore
