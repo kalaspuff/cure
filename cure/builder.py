@@ -1,6 +1,6 @@
 import itertools
 import sys
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, cast
 
 SOURCE_VERSION = itertools.count()
 
@@ -21,10 +21,10 @@ class Builder:
             self.module = module
 
     def build(self, src_code: str, evaldict: Dict[str, Any], **attributes: Any) -> Callable:
-        filename = '<cure-build-{}>'.format(str(next(SOURCE_VERSION)))
+        filename = "<cure-build-{}>".format(str(next(SOURCE_VERSION)))
         src = src_code % vars(self)
 
-        compiled_func = compile(src, filename, 'single')
+        compiled_func = compile(src, filename, "single")
         exec(compiled_func, evaldict)
 
         func = evaldict[self.name]
@@ -37,21 +37,23 @@ class Builder:
 
         try:
             frame = sys._getframe(3)
-        except AttributeError:
-            callermodule = '?'
+        except AttributeError:  # pragme: no cover
+            callermodule = "?"
         else:
-            callermodule = frame.f_globals.get('__name__', '?')
+            callermodule = frame.f_globals.get("__name__", "?")
 
-        func.__module__ = getattr(self, 'module', callermodule)
+        func.__module__ = getattr(self, "module", callermodule)
 
-        return func
+        return cast(Callable, func)
 
     @staticmethod
-    def create_callable(func_def: str, func_body: str, evaldict: Dict[str, Any], module: Any = None, **attributes: Any) -> Callable:
-        name, rest = func_def.strip().split('(', 1)
+    def create_callable(
+        func_def: str, func_body: str, evaldict: Dict[str, Any], module: Any = None, **attributes: Any
+    ) -> Callable:
+        name, rest = func_def.strip().split("(", 1)
         name = name.strip()
         signature = rest.strip()[:-1].strip()
 
-        src_code = 'def {}({}):\n    {}\n'.format(name, signature, func_body.strip())
+        src_code = "def {}({}):\n    {}\n".format(name, signature, func_body.strip())
 
         return Builder(name, signature, module).build(src_code, evaldict, **attributes)
