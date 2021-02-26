@@ -37,7 +37,7 @@ class Builder:
 
         try:
             frame = sys._getframe(3)
-        except AttributeError:  # pragme: no cover
+        except AttributeError:  # pragma: no cover
             callermodule = "?"
         else:
             callermodule = frame.f_globals.get("__name__", "?")
