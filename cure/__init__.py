@@ -7,8 +7,7 @@ from enum import IntEnum
 from functools import update_wrapper
 from typing import Any, Callable, Dict, List, Tuple, Union, cast
 
-from decorator import FunctionMaker
-
+from .builder import Builder
 from .__version_data__ import __version__, __version_info__  # noqa
 
 __author__ = "Carl Oscar Aaro"
@@ -68,7 +67,7 @@ def decorate(func: Callable, caller: Callable) -> Callable:
 
     signature = f"{name}(*args, **kwargs)"
 
-    result = FunctionMaker.create(
+    result = Builder.create_callable(
         signature, "return _call_(_func_, *args, **kwargs)", {"_call_": caller, "_func_": func}, __wrapped__=func
     )
 
@@ -243,9 +242,9 @@ def cure_decorator(*pargs: Any, **pkwargs: Any) -> Callable:
         func, *args = args  # type: ignore
         return _cure(func, options, *args, **kwargs)
 
-    decorator = FunctionMaker.create(
+    decorator = Builder.create_callable(
         "_decorator_wrapper_(*f)",
-        "if not f: return _decorate_(None, _call_)\n" "return _decorate_(f[0], _call_)",
+        "return _decorate_(None, _call_) if not f else _decorate_(f[0], _call_)",
         {"_call_": caller, "_decorate_": decorate},
         module=caller.__module__,
         __wrapped__=caller,
