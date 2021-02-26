@@ -25,7 +25,6 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.6"
-decorator = "^4.4.2"
 
 [tool.poetry.dev-dependencies]
 flake8 = { version = ">=3.8.4", markers = "sys_platform != \"win32\"" }
