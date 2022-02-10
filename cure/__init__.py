@@ -173,13 +173,11 @@ def snake_case_name(kw: str) -> str:
 
 def snake_case_dict(d: Dict, recursive: bool = True) -> Dict:
     result = {}
-
     for k, v in d.items():
         if recursive and isinstance(v, Dict):
             v = snake_case_dict(v, recursive)
         if recursive and isinstance(v, List):
-            v = [snake_case_dict(x, recursive) for x in v]
-
+            v = [snake_case_dict(x, recursive) if isinstance(x, dict) else x for x in v]
         result[snake_case_name(k)] = v
 
     return result
@@ -209,7 +207,7 @@ def camel_case_dict(d: Dict, recursive: bool = True) -> Dict:
         if recursive and isinstance(v, Dict):
             v = camel_case_dict(v, recursive)
         if recursive and isinstance(v, List):
-            v = [camel_case_dict(x, recursive) for x in v]
+            v = [camel_case_dict(x, recursive) if isinstance(x, dict) else x for x in v]
 
         result[camel_case_name(k)] = v
 

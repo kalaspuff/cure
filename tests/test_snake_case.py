@@ -24,11 +24,13 @@ def values(**kwargs):
                 "websiteAddress": "https://example.org/",
                 "type": "subscription",
                 "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+                "values": [1, {"someData": "someValue"}, 3],
             },
             {
                 "websiteAddress": "https://example.org/",
                 "type_": "subscription",
                 "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+                "values": [1, {"someData": "someValue"}, 3],
             },
         ),
         (
@@ -37,11 +39,13 @@ def values(**kwargs):
                 "websiteAddress": "https://example.org/",
                 "type": "subscription",
                 "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+                "values": [1, {"someData": "someValue"}, 3],
             },
             {
                 "websiteAddress": "https://example.org/",
                 "type_": "subscription",
                 "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+                "values": [1, {"someData": "someValue"}, 3],
             },
         ),
         (
@@ -50,11 +54,13 @@ def values(**kwargs):
                 "websiteAddress": "https://example.org/",
                 "type": "subscription",
                 "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+                "values": [1, {"someData": "someValue"}, 3],
             },
             {
                 "website_address": "https://example.org/",
                 "type": "subscription",
                 "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+                "values": [1, {"someData": "someValue"}, 3],
             },
         ),
         (
@@ -63,11 +69,13 @@ def values(**kwargs):
                 "websiteAddress": "https://example.org/",
                 "type": "subscription",
                 "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+                "values": [1, {"someData": "someValue"}, 3],
             },
             {
                 "website_address": "https://example.org/",
                 "type": "subscription",
                 "user": {"id": "4711", "last_login": "2020-01-01T00:00:00.000000Z"},
+                "values": [1, {"some_data": "someValue"}, 3],
             },
         ),
         (
@@ -89,12 +97,16 @@ def values(**kwargs):
                 "resources": [
                     {"resourceId": "1", "data": "ABC", "other-value": True},
                     {"resourceId": "2", "data": "DEF", "other-value": True},
+                    "A non dictionary value",
+                    [1, {"someData": "someValue"}, 3],
                 ]
             },
             {
                 "resources": [
                     {"resource_id": "1", "data": "ABC", "other_value": True},
                     {"resource_id": "2", "data": "DEF", "other_value": True},
+                    "A non dictionary value",
+                    [1, {"someData": "someValue"}, 3],
                 ]
             },
         ),
