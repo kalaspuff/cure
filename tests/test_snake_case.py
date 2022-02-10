@@ -99,6 +99,36 @@ def values(**kwargs):
             },
         ),
         (
+            KEYWORD_SNAKE_CASE_RECURSIVE,
+            {
+                "resources": [
+                    {"resourceId": "1", "data": ["ABC"], "other-value": True},
+                    {"resourceId": "2", "data": ["DEF"], "other-value": True},
+                ]
+            },
+            {
+                "resources": [
+                    {"resource_id": "1", "data": ["ABC"], "other_value": True},
+                    {"resource_id": "2", "data": ["DEF"], "other_value": True},
+                ]
+            },
+        ),
+        (
+            KEYWORD_SNAKE_CASE_RECURSIVE,
+            {
+                "resources": [
+                    {"resourceId": "1", "data": [["ABC"]], "other-value": True},
+                    {"resourceId": "2", "data": [[{"coolBeans": "ABC"}]], "other-value": True},
+                ]
+            },
+            {
+                "resources": [
+                    {"resource_id": "1", "data": [["ABC"]], "other_value": True},
+                    {"resource_id": "2", "data": [[{"cool_beans": "ABC"}]], "other_value": True},
+                ]
+            },
+        ),
+        (
             KEYWORD_SNAKE_CASE,
             {
                 "resources": [
@@ -151,6 +181,36 @@ def values(**kwargs):
                 "resources": [
                     {"resourceId": "1", "data": "ABC", "otherValue": True},
                     {"resourceId": "2", "data": "DEF", "otherValue": True},
+                ]
+            },
+        ),
+        (
+            KEYWORD_CAMEL_CASE_RECURSIVE,
+            {
+                "resources": [
+                    {"resource_id": "1", "data": ["ABC"], "other-value": True},
+                    {"resource_id": "2", "data": ["DEF"], "other-value": True},
+                ]
+            },
+            {
+                "resources": [
+                    {"resourceId": "1", "data": ["ABC"], "otherValue": True},
+                    {"resourceId": "2", "data": ["DEF"], "otherValue": True},
+                ]
+            },
+        ),
+        (
+            KEYWORD_CAMEL_CASE_RECURSIVE,
+            {
+                "resources": [
+                    {"resource_id": "1", "data": [["ABC"]], "other-value": True},
+                    {"resource_id": "2", "data": [[{"cool_beans": "ABC"}]], "other-value": True},
+                ]
+            },
+            {
+                "resources": [
+                    {"resourceId": "1", "data": [["ABC"]], "otherValue": True},
+                    {"resourceId": "2", "data": [[{"coolBeans": "ABC"}]], "otherValue": True},
                 ]
             },
         ),
