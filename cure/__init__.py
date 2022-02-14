@@ -49,7 +49,7 @@ def decorate(func: Callable, caller: Callable) -> Callable:
         and inspect.ismethod(func)
     ):
         bound_arg = getattr(func, "__self__")
-        func = func.__func__  # type: ignore
+        func = func.__func__
 
     if (
         not callable(func)
