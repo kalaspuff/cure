@@ -1,7 +1,7 @@
 import pytest
 
 import cure
-from cure import decorator
+from cure import camel_case_dict, case_shift_dict_or_list, decorator, snake_case_dict
 
 
 @pytest.mark.parametrize("value", [cure(), decorator(), cure.decorator()])
@@ -54,3 +54,21 @@ def test_invalid_argument(value):
     x = X()
     with pytest.raises(TypeError):
         value(x)
+
+
+@pytest.mark.parametrize("value", [None, "a string", 1337, 133.7, True])
+def test_case_shift_dict_or_list_invalid_type(value):
+    with pytest.raises(TypeError):
+        case_shift_dict_or_list(value, lambda: True)
+
+
+@pytest.mark.parametrize("value", [None, "a string", 1337, 133.7, True])
+def test_snake_case_dict_invalid_type(value):
+    with pytest.raises(TypeError):
+        snake_case_dict(value)
+
+
+@pytest.mark.parametrize("value", [None, "a string", 1337, 133.7, True])
+def test_camel_case_dict_invalid_type(value):
+    with pytest.raises(TypeError):
+        camel_case_dict(value)

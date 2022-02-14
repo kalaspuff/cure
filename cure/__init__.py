@@ -7,8 +7,8 @@ from enum import IntEnum
 from functools import update_wrapper
 from typing import Any, Callable, Dict, List, Tuple, Union, cast
 
-from .builder import Builder
 from .__version_data__ import __version__, __version_info__  # noqa
+from .builder import Builder
 
 __author__ = "Carl Oscar Aaro"
 __email__ = "hello@carloscar.com"
@@ -157,6 +157,38 @@ def trail_name(kw: str) -> str:
     return kw
 
 
+def case_shift_dict_or_list(
+    value: Union[Dict, List], case_shift_fn: Callable, recursive: bool = True
+) -> Union[Dict, List]:
+    if isinstance(value, Dict):
+        if recursive:
+            return {
+                case_shift_fn(k): case_shift_dict_or_list(v, case_shift_fn, recursive)
+                if isinstance(v, (Dict, List))
+                else v
+                for k, v in value.items()
+            }
+        return {case_shift_fn(k): v for k, v in value.items()}
+
+    if isinstance(value, List):
+        if recursive:
+            return [
+                case_shift_dict_or_list(entry, case_shift_fn, recursive) if isinstance(entry, (Dict, List)) else entry
+                for entry in value
+            ]
+        else:
+            return value
+
+    raise TypeError(f"Got unexpected type: {type(value)}")
+
+
+def snake_case_dict(d: Dict, recursive: bool = True) -> Dict:
+    if not isinstance(d, Dict):
+        raise TypeError(f"Got unexpected type: {type(d)}")
+
+    return cast(Dict, case_shift_dict_or_list(d, snake_case_name, recursive))
+
+
 def snake_case_name(kw: str) -> str:
     result = ""
 
@@ -171,18 +203,11 @@ def snake_case_name(kw: str) -> str:
     return result
 
 
-def snake_case_dict(d: Dict, recursive: bool = True) -> Dict:
-    result = {}
+def camel_case_dict(d: Dict, recursive: bool = True) -> Dict:
+    if not isinstance(d, Dict):
+        raise TypeError(f"Got unexpected type: {type(d)}")
 
-    for k, v in d.items():
-        if recursive and isinstance(v, Dict):
-            v = snake_case_dict(v, recursive)
-        if recursive and isinstance(v, List):
-            v = [snake_case_dict(x, recursive) for x in v]
-
-        result[snake_case_name(k)] = v
-
-    return result
+    return cast(Dict, case_shift_dict_or_list(d, camel_case_name, recursive))
 
 
 def camel_case_name(kw: str) -> str:
@@ -198,20 +223,6 @@ def camel_case_name(kw: str) -> str:
             next_upper = False
         else:
             result += c
-
-    return result
-
-
-def camel_case_dict(d: Dict, recursive: bool = True) -> Dict:
-    result = {}
-
-    for k, v in d.items():
-        if recursive and isinstance(v, Dict):
-            v = camel_case_dict(v, recursive)
-        if recursive and isinstance(v, List):
-            v = [camel_case_dict(x, recursive) for x in v]
-
-        result[camel_case_name(k)] = v
 
     return result
 
