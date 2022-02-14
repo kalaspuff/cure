@@ -7,7 +7,9 @@ from cure import (
     KEYWORD_SNAKE_CASE,
     KEYWORD_SNAKE_CASE_RECURSIVE,
     KEYWORD_TRAILING_UNDERSCORES,
+    case_shift_dict_or_list,
     cure,
+    snake_case_name,
 )
 
 
@@ -222,3 +224,24 @@ def test_snake_case(options, kwargs, expected):
     else:
         decorator = cure(options)
     assert decorator(values)(**kwargs) == expected
+
+
+@pytest.mark.parametrize(
+    "case_shift_fn, value, expected, recursive",
+    [
+        (
+            snake_case_name,
+            [{"someKey": "somevalue"}, "just a string", 123],
+            [{"some_key": "somevalue"}, "just a string", 123],
+            True,
+        ),
+        (
+            snake_case_name,
+            [{"someKey": "somevalue"}, "just a string", 123],
+            [{"someKey": "somevalue"}, "just a string", 123],
+            False,
+        ),
+    ],
+)
+def test_case_shift_dict_or_list(case_shift_fn, value, expected, recursive):
+    assert case_shift_dict_or_list(value, case_shift_fn, recursive) == expected

@@ -7,8 +7,8 @@ from enum import IntEnum
 from functools import update_wrapper
 from typing import Any, Callable, Dict, List, Tuple, Union, cast
 
-from .builder import Builder
 from .__version_data__ import __version__, __version_info__  # noqa
+from .builder import Builder
 
 __author__ = "Carl Oscar Aaro"
 __email__ = "hello@carloscar.com"
