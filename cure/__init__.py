@@ -77,7 +77,7 @@ def decorate(func: Callable, caller: Callable) -> Callable:
     if bound_arg:
         result = result.__get__(bound_arg)  # type: ignore
     if is_staticmethod:
-        result = staticmethod(result)  # type: ignore
+        result = cast(Callable, staticmethod(result))
     if is_classmethod:
         result = classmethod(result)  # type: ignore
 
