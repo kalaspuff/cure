@@ -26,11 +26,15 @@ def values(**kwargs):
                 "websiteAddress": "https://example.org/",
                 "type": "subscription",
                 "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+                "key10": {"0key": 0, "10key": 10},
+                "HTTPResponse": {"weird_MixedKey_name": "somevalue", "weirder_mixedKey_name": "somevalue"},
             },
             {
                 "websiteAddress": "https://example.org/",
                 "type_": "subscription",
                 "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+                "key10": {"0key": 0, "10key": 10},
+                "HTTPResponse": {"weird_MixedKey_name": "somevalue", "weirder_mixedKey_name": "somevalue"},
             },
         ),
         (
@@ -39,11 +43,15 @@ def values(**kwargs):
                 "websiteAddress": "https://example.org/",
                 "type": "subscription",
                 "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+                "key10": {"0key": 0, "10key": 10},
+                "HTTPResponse": {"weird_MixedKey_name": "somevalue", "weirder_mixedKey_name": "somevalue"},
             },
             {
                 "websiteAddress": "https://example.org/",
                 "type_": "subscription",
                 "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+                "key10": {"0key": 0, "10key": 10},
+                "HTTPResponse": {"weird_MixedKey_name": "somevalue", "weirder_mixedKey_name": "somevalue"},
             },
         ),
         (
@@ -52,11 +60,15 @@ def values(**kwargs):
                 "websiteAddress": "https://example.org/",
                 "type": "subscription",
                 "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+                "key10": {"0key": 0, "10key": 10},
+                "HTTPResponse": {"weird_MixedKey_name": "somevalue", "weirder_mixedKey_name": "somevalue"},
             },
             {
                 "website_address": "https://example.org/",
                 "type": "subscription",
                 "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+                "key_10": {"0key": 0, "10key": 10},
+                "http_response": {"weird_MixedKey_name": "somevalue", "weirder_mixedKey_name": "somevalue"},
             },
         ),
         (
@@ -65,11 +77,15 @@ def values(**kwargs):
                 "websiteAddress": "https://example.org/",
                 "type": "subscription",
                 "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+                "key10": {"0key": 0, "10key": 10},
+                "HTTPResponse": {"weird_MixedKey_name": "somevalue", "weirder_mixedKey_name": "somevalue"},
             },
             {
                 "website_address": "https://example.org/",
                 "type": "subscription",
                 "user": {"id": "4711", "last_login": "2020-01-01T00:00:00.000000Z"},
+                "key_10": {"0_key": 0, "10_key": 10},
+                "http_response": {"weird_mixed_key_name": "somevalue", "weirder_mixed_key_name": "somevalue"},
             },
         ),
         (
@@ -78,25 +94,27 @@ def values(**kwargs):
                 "websiteAddress": "https://example.org/",
                 "type": "subscription",
                 "user": {"id": "4711", "lastLogin": "2020-01-01T00:00:00.000000Z"},
+                "key10": {"0key": 0, "10key": 10},
             },
             {
                 "website_address": "https://example.org/",
                 "type_": "subscription",
                 "user": {"id": "4711", "last_login": "2020-01-01T00:00:00.000000Z"},
+                "key_10": {"0_key": 0, "10_key": 10},
             },
         ),
         (
             KEYWORD_SNAKE_CASE_RECURSIVE,
             {
                 "resources": [
-                    {"resourceId": "1", "data": "ABC", "other-value": True},
-                    {"resourceId": "2", "data": "DEF", "other-value": True},
+                    {"resourceId": "1", "data": "ABC", "other-value": True, "1337value": 1337},
+                    {"resourceId": "2", "data": "DEF", "other-value": True, "1337value": 69},
                 ]
             },
             {
                 "resources": [
-                    {"resource_id": "1", "data": "ABC", "other_value": True},
-                    {"resource_id": "2", "data": "DEF", "other_value": True},
+                    {"resource_id": "1", "data": "ABC", "other_value": True, "1337_value": 1337},
+                    {"resource_id": "2", "data": "DEF", "other_value": True, "1337_value": 69},
                 ]
             },
         ),
@@ -231,14 +249,24 @@ def test_snake_case(options, kwargs, expected):
     [
         (
             snake_case_name,
-            [{"someKey": "somevalue"}, "just a string", 123],
-            [{"some_key": "somevalue"}, "just a string", 123],
+            [
+                {"someKey": "somevalue"},
+                "just a string",
+                123,
+                {"someKey123": "someValue", "123someKey": "someOtherValue"},
+            ],
+            [
+                {"some_key": "somevalue"},
+                "just a string",
+                123,
+                {"some_key_123": "someValue", "123_some_key": "someOtherValue"},
+            ],
             True,
         ),
         (
             snake_case_name,
-            [{"someKey": "somevalue"}, "just a string", 123],
-            [{"someKey": "somevalue"}, "just a string", 123],
+            [{"someKey123": "somevalue"}, "just a string", 123],
+            [{"someKey123": "somevalue"}, "just a string", 123],
             False,
         ),
     ],

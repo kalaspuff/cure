@@ -191,9 +191,16 @@ def snake_case_dict(d: Dict, recursive: bool = True) -> Dict:
 
 def snake_case_name(kw: str) -> str:
     result = ""
+    lowercased_name = kw.lower()
+    max_index = len(kw) - 1
 
     for i, c in enumerate(kw.lower()):
-        if i and c != kw[i]:
+        if i and (
+            (c != kw[i] and kw[i - 1] != "_" and kw[i - 1] == result[-1])
+            or (i < max_index and c != kw[i] and kw[i - 1] != "_" and kw[i + 1] == lowercased_name[i + 1])
+            or (c.isdigit() and not kw[i - 1].isdigit())
+            or (not c.isdigit() and kw[i - 1].isdigit())
+        ):
             result += "_"
         if c == "-":
             c = "_"
