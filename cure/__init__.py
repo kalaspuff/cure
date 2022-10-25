@@ -113,11 +113,17 @@ def get_options(*args: Any, **kwargs: Any) -> List:
         if isinstance(args[0], (tuple, list)):
             values = list(map(lambda x: str(x).upper(), [x for x in args[0] if x]))
             for o in Options:
-                if str(o.value) in values or str(o).upper() in values or str(o).upper().split(".")[1] in values:
+                if (
+                    str(o.value) in values
+                    or str(f"Options.{o.name}").upper() in values
+                    or str(f"Options.{o.name}").upper().split(".")[1] in values
+                ):
                     options.append(o)
                     values = list(
                         filter(
-                            lambda x: x != str(o.value) and x != str(o).upper() and x != str(o).upper().split(".")[1],
+                            lambda x: x != str(o.value)
+                            and x != str(f"Options.{o.name}").upper()
+                            and x != str(f"Options.{o.name}").upper().split(".")[1],
                             values,
                         )
                     )
@@ -135,9 +141,9 @@ def get_options(*args: Any, **kwargs: Any) -> List:
     if kwargs:
         values = [str(k).upper() for k, v in kwargs.items() if v]
         for o in Options:
-            if str(o).upper().split(".")[1] in values:
+            if str(f"Options.{o.name}").upper().split(".")[1] in values:
                 options.append(o)
-                values.remove(str(o).upper().split(".")[1])
+                values.remove(str(f"Options.{o.name}").upper().split(".")[1])
         if values:
             raise TypeError("Invalid options: unknown values '" + "', '".join(values) + "'")
 
