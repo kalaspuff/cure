@@ -54,7 +54,7 @@ skip = ".mypy_cache,__pycache__,.pytest_cache,.eggs,.venv,.git,.vscode,.github,d
 
 [tool.mypy]
 pretty = true
-files = ["$MYPY_CONFIG_FILE_DIR/cure", "$MYPY_CONFIG_FILE_DIR/tests"]
+files = ["$MYPY_CONFIG_FILE_DIR/cure"]
 ignore_missing_imports = true
 show_error_codes = true
 no_implicit_reexport = true

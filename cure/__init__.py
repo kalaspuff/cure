@@ -29,7 +29,7 @@ options = Options
 DEFAULT_OPTIONS = [Options.KEYWORD_TRAILING_UNDERSCORES]
 
 
-def decorate(func: Callable, caller: Callable) -> Callable:
+def decorate(func: Union[Callable, types.FunctionType, staticmethod, classmethod], caller: Callable) -> Callable:
     if not func:  # type: ignore
         raise TypeError("'cure.decorator' must decorate a callable")
 
@@ -40,7 +40,7 @@ def decorate(func: Callable, caller: Callable) -> Callable:
         func = func.__func__
         is_staticmethod = True
     elif not isinstance(func, types.FunctionType) and isinstance(func, classmethod):
-        func = func.__func__  # type: ignore
+        func = func.__func__
         is_classmethod = True
     elif (
         not isinstance(func, types.FunctionType)
