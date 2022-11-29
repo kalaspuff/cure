@@ -157,6 +157,21 @@ isort = ">=4.3.5,<6"
 test = ["pytest"]
 
 [[package]]
+name = "flake8-pyproject"
+version = "1.2.1"
+description = "Flake8 plug-in loading the configuration from pyproject.toml"
+category = "dev"
+optional = false
+python-versions = ">= 3.6"
+
+[package.dependencies]
+Flake8 = ">=5,<7"
+TOMLi = {version = "*", markers = "python_version < \"3.11\""}
+
+[package.extras]
+dev = ["pyTest", "pyTest-cov"]
+
+[[package]]
 name = "idna"
 version = "3.4"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -416,7 +431,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "206f8d406c31b56797edb8fa41961719836de99912bf9efc0db2e8274d7fd7bf"
+content-hash = "606c5d74cac1646c6042fed02531ea664004c03bc1630e935642a9849857dcfb"
 
 [metadata.files]
 attrs = [
@@ -534,6 +549,9 @@ flake8-black = [
 flake8-isort = [
     {file = "flake8-isort-5.0.3.tar.gz", hash = "sha256:0951398c343c67f4933407adbbfb495d4df7c038650c5d05753a006efcfeb390"},
     {file = "flake8_isort-5.0.3-py3-none-any.whl", hash = "sha256:8c4ab431d87780d0c8336e9614e50ef11201bc848ef64ca017532dec39d4bf49"},
+]
+flake8-pyproject = [
+    {file = "flake8_pyproject-1.2.1-py3-none-any.whl", hash = "sha256:d2470803b38883881c250c27f361ca4c49e7b8f9e3a17f7d44aa43b6965b2363"},
 ]
 idna = [
     {file = "idna-3.4-py3-none-any.whl", hash = "sha256:90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2"},
