@@ -29,8 +29,8 @@ options = Options
 DEFAULT_OPTIONS = [Options.KEYWORD_TRAILING_UNDERSCORES]
 
 
-def decorate(func: Callable, caller: Callable) -> Callable:
-    if not func:
+def decorate(func: Union[Callable, types.FunctionType, staticmethod, classmethod], caller: Callable) -> Callable:
+    if not func:  # type: ignore
         raise TypeError("'cure.decorator' must decorate a callable")
 
     bound_arg = None
@@ -52,7 +52,7 @@ def decorate(func: Callable, caller: Callable) -> Callable:
         func = func.__func__
 
     if (
-        not callable(func)
+        not callable(func)  # type: ignore
         and not isinstance(func, (staticmethod, classmethod))
         and not isinstance(func, types.FunctionType)
     ):
@@ -374,3 +374,30 @@ cure_instance.__name__ = _actual_module.__name__  # type: ignore
 cure_instance.__package__ = _actual_module.__package__  # type: ignore
 
 sys.modules[__name__] = cure_instance  # type: ignore
+
+__all__ = [
+    "__version__",
+    "__version_info__",
+    "__author__",
+    "__email__",
+    "respected_keywords",
+    "decorate",
+    "get_options",
+    "is_keyword",
+    "trail_name",
+    "case_shift_dict_or_list",
+    "snake_case_dict",
+    "snake_case_name",
+    "camel_case_dict",
+    "camel_case_name",
+    "Options",
+    "options",
+    "DEFAULT_OPTIONS",
+    "decorator",
+    "cure",
+    "KEYWORD_TRAILING_UNDERSCORES",
+    "KEYWORD_SNAKE_CASE",
+    "KEYWORD_SNAKE_CASE_RECURSIVE",
+    "KEYWORD_CAMEL_CASE",
+    "KEYWORD_CAMEL_CASE_RECURSIVE",
+]

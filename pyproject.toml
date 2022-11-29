@@ -31,6 +31,7 @@ python = "^3.7"
 flake8 = { version = ">=3.8.4", markers = "sys_platform != \"win32\"" }
 flake8-black = { version = ">=0.2.0", markers = "sys_platform != \"win32\"" }
 flake8-isort = { version = ">=4.0.0", markers = "sys_platform != \"win32\"" }
+flake8-pyproject = { version = ">=1.1.0", markers = "sys_platform != \"win32\"" }
 isort = { version = ">=5.6.0", markers = "sys_platform != \"win32\"" }
 pytest = { version = ">=6.1.0", markers = "sys_platform != \"win32\"" }
 pytest-cov = { version = ">=2.10.0", markers = "sys_platform != \"win32\"" }
@@ -40,12 +41,39 @@ codecov = { version = ">=2.1.10", markers = "sys_platform != \"win32\"" }
 
 [tool.black]
 line-length = 120
-target_version = ["py37", "py38"]
+target_version = ["py37", "py38", "py39", "py310", "py311"]
 include = '\.pyi?$'
 exclude = '\.eggs/|\.egg-info/|\.git/|\.github/|\.mypy_cache/|\.venv/|\.pytest_cache/|\.vscode/|__pycache__/|build/|dist/|setup\.py'
 
 [tool.isort]
 profile = "black"
 line_length = 120
+src_paths = ["cure"]
 known_first_party = "cure"
 skip = ".mypy_cache,__pycache__,.pytest_cache,.eggs,.venv,.git,.vscode,.github,dist"
+
+[tool.mypy]
+pretty = true
+files = ["$MYPY_CONFIG_FILE_DIR/cure"]
+ignore_missing_imports = true
+show_error_codes = true
+no_implicit_reexport = true
+no_implicit_optional = true
+strict_equality = true
+strict_optional = true
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+local_partial_types = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+warn_unreachable = true
+
+[tool.flake8]
+ignore = ["E203", "E501", "W503"]
+exclude = ["cure.egg-info", ".git", ".mypy_cache", ".pytest_cache", ".venv", ".vscode", "__pycache__", "build", "dist", "tmp"]
+
+[tool.coverage.run]
+omit = ["tests/*"]
