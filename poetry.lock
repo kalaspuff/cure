@@ -158,14 +158,14 @@ test = ["pytest"]
 
 [[package]]
 name = "flake8-pyproject"
-version = "1.2.1"
+version = "1.2.2"
 description = "Flake8 plug-in loading the configuration from pyproject.toml"
 category = "dev"
 optional = false
 python-versions = ">= 3.6"
 
 [package.dependencies]
-Flake8 = ">=5,<7"
+Flake8 = ">=5"
 TOMLi = {version = "*", markers = "python_version < \"3.11\""}
 
 [package.extras]
@@ -475,7 +475,6 @@ click = [
 ]
 codecov = [
     {file = "codecov-2.1.12-py2.py3-none-any.whl", hash = "sha256:585dc217dc3d8185198ceb402f85d5cb5dbfa0c5f350a5abcdf9e347776a5b47"},
-    {file = "codecov-2.1.12-py3.8.egg", hash = "sha256:782a8e5352f22593cbc5427a35320b99490eb24d9dcfa2155fd99d2b75cfb635"},
     {file = "codecov-2.1.12.tar.gz", hash = "sha256:a0da46bb5025426da895af90938def8ee12d37fcbcbbbc15b6dc64cf7ebc51c1"},
 ]
 colorama = [
@@ -551,7 +550,7 @@ flake8-isort = [
     {file = "flake8_isort-5.0.3-py3-none-any.whl", hash = "sha256:8c4ab431d87780d0c8336e9614e50ef11201bc848ef64ca017532dec39d4bf49"},
 ]
 flake8-pyproject = [
-    {file = "flake8_pyproject-1.2.1-py3-none-any.whl", hash = "sha256:d2470803b38883881c250c27f361ca4c49e7b8f9e3a17f7d44aa43b6965b2363"},
+    {file = "flake8_pyproject-1.2.2-py3-none-any.whl", hash = "sha256:52d412219e7db6227faa654675b1435947b11d49b453f3eced760f19bdd6f06a"},
 ]
 idna = [
     {file = "idna-3.4-py3-none-any.whl", hash = "sha256:90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2"},
